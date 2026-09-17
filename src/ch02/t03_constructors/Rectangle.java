@@ -11,41 +11,41 @@ public class Rectangle {
 
     /** Конструктор жоқ (no-arg): 1 x 1 тіктөртбұрыш. */
     public Rectangle() {
-        // TODO
+        this.width = 1;
+        this.height = 1;
     }
 
     /** Бір параметрлі: шаршы (width == height == side). */
     public Rectangle(double side) {
-        // TODO
+        this.width = side;
+        this.height = side;
     }
 
     /** Екі параметрлі. */
     public Rectangle(double width, double height) {
-        // TODO
+        this.width = width;
+        this.height = height;
     }
 
     /** Көшірме конструкторы (copy constructor): басқа объектінің көшірмесі. */
     public Rectangle(Rectangle other) {
-        // TODO
+        this.width = other.width;
+        this.height = other.height;
     }
 
     public double getWidth() {
-        // TODO
-        return 0;
+        return width;
     }
 
     public double getHeight() {
-        // TODO
-        return 0;
+        return height;
     }
 
     public double area() {
-        // TODO
-        return 0;
+        return width * height;
     }
 
     public double perimeter() {
-        // TODO
-        return 0;
+        return (width * 2) + (height * 2);
     }
 }
