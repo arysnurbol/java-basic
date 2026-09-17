@@ -8,28 +8,31 @@ package ch02.t01_class_object;
  */
 public class Book {
 
-    // TODO: үш өріс жарияла: title (String), author (String), year (int).
-    //       Өрістерді private қыл.
+    private String title;
+    private String author;
+    private int year;
 
     public Book(String title, String author, int year) {
-        // TODO: келген мәндерді өрістерге меншікте (this. қолдан).
+        this.title = title;
+        this.author = author;
+        this.year = year;
     }
 
     /** "Java (Bachina, 2027)" пішімінде жол қайтарады. */
     public String describe() {
-        // TODO
-        return null;
+        return this.title + " (" + this.author + ", " + this.year + ")";
     }
 
     /** Кітап көрсетілген жылдан бұрын шыққан ба. */
     public boolean isOlderThan(int otherYear) {
-        // TODO
-        return false;
+        return this.year < otherYear;
     }
 
     /** Кітап неше жаста (берілген ағымдағы жылға қатысты). */
     public int ageIn(int currentYear) {
-        // TODO
+        if  (this.year < currentYear) {
+            return currentYear - this.year;
+        }
         return 0;
     }
 }
