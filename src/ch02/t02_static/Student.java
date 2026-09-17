@@ -6,34 +6,30 @@ package ch02.t02_static;
  */
 public class Student {
 
-    // TODO: private static int count — жасалған студенттердің ортақ санағышы.
-
-    // TODO: private final int id;  (әр объектінің өз нөмірі)
-    // TODO: private final String name;
+    private static int count; // — жасалған студенттердің ортақ санағышы.
+    private final int id; //  (әр объектінің өз нөмірі)
+    private final String name;
 
     public Student(String name) {
-        // TODO: count-ты 1-ге өсір, жаңа мәнді осы объектінің id-іне бер.
-        //       Яғни бірінші студент id = 1, екіншісі id = 2, ...
+        this.name = name;
+        this.id = ++count;
     }
 
     public int getId() {
-        // TODO
-        return 0;
+        return id;
     }
 
     public String getName() {
-        // TODO
-        return null;
+        return name;
     }
 
     /** Барлығы неше Student объектісі жасалды. */
     public static int getCount() {
-        // TODO
-        return 0;
+        return Student.count;
     }
 
     /** Санағышты нөлдеу (тек тест үшін керек). */
     public static void resetCount() {
-        // TODO
+        Student.count = 0;
     }
 }
