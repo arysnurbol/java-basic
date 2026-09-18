@@ -8,8 +8,11 @@ public class TextUtils {
 
     /** Барлық санның қосындысы. Аргумент берілмесе — 0. */
     public static int sum(int... numbers) {
-        // TODO
-        return 0;
+        int sum = 0;
+        for (int number : numbers) {
+            sum += number;
+        }
+        return sum;
     }
 
     /**
@@ -17,8 +20,14 @@ public class TextUtils {
      * Бір де бөлік берілмесе — "" қайтар.
      */
     public static String join(String separator, String... parts) {
-        // TODO
-        return null;
+        StringBuilder sb = new StringBuilder();
+        for (int  i = 0; i < parts.length; i++) {
+            sb.append(parts[i]);
+            if (i < parts.length - 1) {
+                sb.append(separator);
+            }
+        }
+        return sb.toString();
     }
 
     /**
@@ -26,13 +35,21 @@ public class TextUtils {
      * бұл varargs-пен жиі қолданылатын әдіс.
      */
     public static double average(double first, double... rest) {
-        // TODO
-        return 0;
+        double sum = first;
+        for (double number : rest) {
+            sum += number;
+        }
+        return sum / (rest.length + 1);
     }
 
     /** Ең ұзын жолды қайтарады. Ештеңе берілмесе — null. */
     public static String longest(String... values) {
-        // TODO
-        return null;
+        String longest = null;
+        for (String value : values) {
+            if (longest == null || value.length() > longest.length()) {
+                longest = value;
+            }
+        }
+        return longest;
     }
 }
