@@ -10,20 +10,17 @@ public class MathUtils {
 
     /** Екі бүтін санның үлкенін қайтарады. */
     public static int max(int a, int b) {
-        // TODO
-        return 0;
+        return a > b ? a : b;
     }
 
     /** Екі бөлшек санның үлкенін қайтарады. */
     public static double max(double a, double b) {
-        // TODO
-        return 0;
+        return a > b ? a : b;
     }
 
     /** Үш бүтін санның үлкенін қайтарады (жоғарыдағы max(int,int)-ті қайта қолдан). */
     public static int max(int a, int b, int c) {
-        // TODO
-        return 0;
+        return max(max(a, b), c);
     }
 
     /**
@@ -31,8 +28,18 @@ public class MathUtils {
      * Массив null немесе бос болса — IllegalArgumentException лақтыр.
      */
     public static int max(int[] numbers) {
-        // TODO
-        return 0;
+        if  (numbers == null || numbers.length == 0) {
+            throw new IllegalArgumentException("Array is null or empty");
+        }
+
+        int max = numbers[0];
+        for (int i = 1; i < numbers.length; i++) {
+            if (numbers[i] > max) {
+                max = numbers[i];
+            }
+        }
+
+        return max;
     }
 
     /**
@@ -40,7 +47,6 @@ public class MathUtils {
      * Ұзындығы тең болса — бірінші аргументті (a) қайтар.
      */
     public static String max(String a, String b) {
-        // TODO
-        return null;
+        return a.length() >= b.length() ? a : b;
     }
 }
