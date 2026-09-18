@@ -9,12 +9,10 @@ public class Dog extends Animal {
 
     @Override
     public String speak() {
-        // TODO: "Woof" қайтар
-        return null;
+        return "Woof";
     }
 
     public String fetch() {
-        // TODO: getName() + " доптың артынан жүгірді" қайтар
-        return null;
+        return getName() + " доптың артынан жүгірді";
     }
 }

@@ -1,5 +1,7 @@
 package ch02.t09_object_methods;
 
+import java.util.Objects;
+
 /**
  * Тапсырма 09 — Object класы (toString, equals, hashCode) және көпдеңгейлі мұрагерлік.
  * Кітап: "Класс Object" (92-б.), "Многоуровневое наследование" (90-б.)
@@ -26,8 +28,7 @@ public class Animal {
      */
     @Override
     public String toString() {
-        // TODO
-        return null;
+        return getClass().getSimpleName() + "(" + name + ")";
     }
 
     /**
@@ -36,14 +37,19 @@ public class Animal {
      */
     @Override
     public boolean equals(Object other) {
-        // TODO
-        return false;
+        if (this == other) {
+            return true;
+        }
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+        Animal animal = (Animal) other;
+        return Objects.equals(name, animal.name);
     }
 
     /** equals() тең болса, hashCode() да тең болуы керек. */
     @Override
     public int hashCode() {
-        // TODO: name негізінде қайтар
-        return 0;
+        return Objects.hashCode(name);
     }
 }

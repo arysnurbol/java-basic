@@ -12,13 +12,12 @@ public class Puppy extends Dog {
 
     @Override
     public String speak() {
-        // TODO: "Yip" қайтар
-        return null;
+        return "Yip";
     }
 
     /** "Yip (әкесі: Woof)" — super.speak() арқылы ата-класстың нұсқасын ал. */
     public String speakWithParent() {
         // TODO
-        return null;
+        return speak() + " (әкесі: " + super.speak() + ")";
     }
 }
