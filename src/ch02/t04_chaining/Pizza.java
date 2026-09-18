@@ -17,34 +17,35 @@ public class Pizza {
 
     /** Әдепкі: "M", ірімшікпен, пепперонисіз. */
     public Pizza() {
-        // TODO: this("M", true, false) арқылы негізгі конструкторға жүгін
+        this("M", true, false);
     }
 
     /** Өлшемі берілген: ірімшікпен, пепперонисіз. */
     public Pizza(String size) {
-        // TODO: this(...) арқылы негізгі конструкторға жүгін
+        this(size, true, false);
     }
 
     /** Өлшемі мен ірімшігі берілген: пепперонисіз. */
     public Pizza(String size, boolean cheese) {
-        // TODO: this(...) арқылы негізгі конструкторға жүгін
+        this(size, cheese, false);
     }
 
     /** Негізгі конструктор — өрістерді МЕНШІКТЕУ тек осында болады. */
     public Pizza(String size, boolean cheese, boolean pepperoni) {
-        // TODO: үш өрісті меншікте және createdCount-ты 1-ге өсір
+        this.size = size;
+        this.cheese = cheese;
+        this.pepperoni = pepperoni;
+        createdCount++;
     }
 
     public String getSize() {
-        // TODO
-        return null;
+        return size;
     }
 
     /** "Pizza[size=M, cheese=true, pepperoni=false]" пішімі. */
     @Override
     public String toString() {
-        // TODO
-        return null;
+        return "Pizza[size=" + size + ", cheese=" +cheese + ", pepperoni=" +pepperoni + "]";
     }
 
     public static int getCreatedCount() {
