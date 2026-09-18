@@ -20,13 +20,15 @@ public class Employee {
 
     /** Базалық нұсқада — тек оклад. */
     public double getMonthlySalary() {
-        // TODO: baseSalary қайтар
-        return 0;
+        return baseSalary;
+    }
+
+    public String getClassName() {
+        return this.getClass().getSimpleName();
     }
 
     /** "Employee: Aisha" пішімі. */
     public String getInfo() {
-        // TODO
-        return null;
+        return getClassName() + ": " + name;
     }
 }

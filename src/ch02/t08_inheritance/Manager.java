@@ -10,23 +10,20 @@ public class Manager extends Employee {
     private final double bonus;
 
     public Manager(String name, double baseSalary, double bonus) {
-        // TODO: super(...) шақыр (ол ең бірінші жол болуы керек), сосын bonus-ты меншікте
         super(name, baseSalary);
-        this.bonus = 0;
+        this.bonus = bonus;
     }
 
     /** Оклад + бонус. super.getMonthlySalary() қайта қолданылуы керек. */
     @Override
     public double getMonthlySalary() {
-        // TODO
-        return 0;
+        return super.getMonthlySalary() + bonus;
     }
 
     /** "Manager: Aisha" пішімі. */
     @Override
     public String getInfo() {
-        // TODO
-        return null;
+        return getClassName() + ": " + name;
     }
 
     public double getBonus() {
