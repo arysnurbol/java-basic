@@ -17,7 +17,7 @@ public class ParamLab {
      * Болжам: шақырған жақтағы айнымалы өзгере ме? ____
      */
     public static void increment(int value) {
-        // TODO: value++ жаз
+        value++;
     }
 
     /**
@@ -25,7 +25,8 @@ public class ParamLab {
      * Болжам: шақырған жақтағы объект өзгере ме? ____
      */
     public static void incrementInside(Counter counter) {
-        // TODO: counter.setValue(counter.getValue() + 1)
+        // обект сілтемесі өзгермейді тек мәні ғана өзгереді
+        counter.setValue(counter.getValue() + 1);
     }
 
     /**
@@ -33,7 +34,7 @@ public class ParamLab {
      * Болжам: шақырған жақтағы айнымалы жаңа объектіге көрсете ме? ____
      */
     public static void reassign(Counter counter) {
-        // TODO: counter = new Counter(999)
+        counter = new Counter(999);
     }
 
     /**
@@ -41,7 +42,9 @@ public class ParamLab {
      * Болжам: шақырған жақтағы массив өзгере ме? ____
      */
     public static void doubleAll(int[] numbers) {
-        // TODO
+        for (int i = 0; i < numbers.length; i++) {
+            numbers[i] = numbers[i] * 2;
+        }
     }
 
     /**
@@ -49,7 +52,8 @@ public class ParamLab {
      * Болжам: шақырған жақтағы массив ауыса ма? ____
      */
     public static void replaceArray(int[] numbers) {
-        // TODO: numbers = new int[]{7, 7, 7}
+        // сілтемедегі мәндер өзгереді
+        numbers = new int[]{7, 7, 7};
     }
 
     /**
@@ -57,7 +61,10 @@ public class ParamLab {
      * (Мутация орнына таза функция жазудың дұрыс жолы.)
      */
     public static int[] doubledCopy(int[] numbers) {
-        // TODO
-        return null;
+        int[] newNumbers = new int[numbers.length];
+        for (int i = 0; i < numbers.length; i++) {
+            newNumbers[i] = numbers[i] * 2;
+        }
+        return newNumbers;
     }
 }
