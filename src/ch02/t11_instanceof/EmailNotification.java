@@ -19,7 +19,6 @@ public class EmailNotification extends Notification {
      */
     @Override
     public EmailNotification copy() {
-        // TODO
-        return null;
+        return new EmailNotification(getMessage(), getAddress());
     }
 }

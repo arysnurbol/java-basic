@@ -1,5 +1,7 @@
 package ch02.t11_instanceof;
 
+import java.util.Arrays;
+
 public class NotificationRouter {
 
     /**
@@ -13,13 +15,26 @@ public class NotificationRouter {
      * Бөлек cast жазудың қажеті жоқ.
      */
     public static String route(Notification n) {
-        // TODO
-        return null;
+        // Java 16 Pattern Matching: instanceof бір уақытта тексеріп, типті түрлендіреді (cast)
+        if (n instanceof EmailNotification email) {
+            return "EMAIL -> " + email.getAddress() + ": " + email.getMessage();
+        } else if (n instanceof SmsNotification sms) {
+            // SmsNotification класында getPhoneNumber() сияқты әдіс бар деп есептесек:
+            return "SMS -> " + sms.getPhone() + ": " + sms.getMessage();
+        } else {
+            return "UNKNOWN";
+        }
     }
 
     /** Массивтегі EmailNotification объектілерінің саны. */
     public static int countEmails(Notification[] all) {
-        // TODO
-        return 0;
+        int count = 0;
+        for (Notification n : all) {
+            if (n instanceof EmailNotification) {
+                count++;
+            }
+        }
+
+        return count;
     }
 }

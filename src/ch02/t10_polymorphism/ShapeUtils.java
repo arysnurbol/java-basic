@@ -36,7 +36,7 @@ public class ShapeUtils {
 //                .filter(Objects::nonNull)
 //                .max((s1, s2) -> Double.compare(s1.area(), s2.area())) // Тағы да полиморфизм
 //                .orElse(null);
-        
+
         if (shapes == null || shapes.length == 0) {
             return null;
         }

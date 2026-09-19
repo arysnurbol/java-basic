@@ -21,7 +21,6 @@ public class Notification {
      * Ұрпақ кластарда қайтару типі НАҚТЫЛАНАДЫ — бұл ковариантты қайтару типі.
      */
     public Notification copy() {
-        // TODO: жаңа Notification қайтар
-        return null;
+        return new Notification(message);
     }
 }

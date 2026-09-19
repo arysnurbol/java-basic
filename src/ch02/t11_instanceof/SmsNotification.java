@@ -15,7 +15,6 @@ public class SmsNotification extends Notification {
 
     @Override
     public SmsNotification copy() {
-        // TODO
-        return null;
+        return new SmsNotification(getMessage(), getPhone());
     }
 }
