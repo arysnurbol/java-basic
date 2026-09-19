@@ -9,7 +9,6 @@ public class Bicycle extends Vehicle {
     /** Велосипед отын жақпайды. */
     @Override
     public double fuelCostPer100Km() {
-        // TODO
-        return -1;
+        return 0;
     }
 }

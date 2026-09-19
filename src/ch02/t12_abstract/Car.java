@@ -13,7 +13,6 @@ public class Car extends Vehicle {
 
     @Override
     public double fuelCostPer100Km() {
-        // TODO
-        return 0;
+        return litersPer100Km *  pricePerLiter;
     }
 }

@@ -24,13 +24,11 @@ public abstract class Vehicle {
 
     /** Барлық көлікке ортақ логика — abstract методты пайдаланады. */
     public double tripCost(double km) {
-        // TODO: km / 100 * fuelCostPer100Km()
-        return 0;
+        return (fuelCostPer100Km() / 100.0) * km;
     }
 
     /** "Toyota Camry: 100 км = 8000 ₸" пішімі (бүтін санға дөңгелектенген). */
     public String describe() {
-        // TODO: Math.round(fuelCostPer100Km()) қолдан
-        return null;
+        return model + ": 100 км = " + Math.round(fuelCostPer100Km()) + " ₸";
     }
 }
