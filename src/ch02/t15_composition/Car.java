@@ -22,24 +22,20 @@ public class Car {
 
     /** Қозғалтқышқа тапсырма береді (delegation). */
     public String start() {
-        // TODO: engine.start() қайтар
-        return null;
+        return engine.start();
     }
 
     public String stop() {
-        // TODO
-        return null;
+        return engine.stop();
     }
 
     public boolean isRunning() {
-        // TODO
-        return false;
+        return engine.isRunning();
     }
 
     /** "Toyota Camry [V6, 300 а.к.]" пішімі. */
     public String getSpec() {
-        // TODO
-        return null;
+        return getModel() + " [" + engine.getType() + ", " + engine.getHorsePower() + " а.к.]";
     }
 
     /**
@@ -47,7 +43,6 @@ public class Car {
      * Композицияның артықшылығы: мұрагерлікте бөлшекті осылай ауыстыра алмас едің.
      */
     public Car withEngine(Engine newEngine) {
-        // TODO
-        return null;
+        return new Car(model, newEngine);
     }
 }

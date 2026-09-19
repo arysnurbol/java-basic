@@ -29,13 +29,13 @@ public class Engine {
 
     /** Іске қосылды деп белгілейді және "V6 іске қосылды" қайтарады. */
     public String start() {
-        // TODO
-        return null;
+        running = true;
+        return getType() + " іске қосылды";
     }
 
     /** Тоқтатылды деп белгілейді және "V6 тоқтады" қайтарады. */
     public String stop() {
-        // TODO
-        return null;
+        running = false;
+        return getType() + " тоқтады";
     }
 }
