@@ -17,7 +17,6 @@ public class FullTimeEmployee implements Payable {
 
     @Override
     public double grossPay() {
-        // TODO
-        return 0;
+        return monthlySalary;
     }
 }

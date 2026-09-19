@@ -17,13 +17,11 @@ public interface Payable {
      * Ұрпақ кластар қаласа қайта жазады.
      */
     default double netPay() {
-        // TODO: grossPay() * (1 - DEFAULT_TAX_RATE)
-        return 0;
+        return grossPay() * (1 - DEFAULT_TAX_RATE);
     }
 
     /** Интерфейстегі статикалық метод — көмекші функция. */
     static String currency() {
-        // TODO: "KZT" қайтар
-        return null;
+        return "KZT";
     }
 }

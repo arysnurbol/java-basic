@@ -22,14 +22,12 @@ public class Contractor implements Payable {
 
     @Override
     public double grossPay() {
-        // TODO
-        return 0;
+        return  hourlyRate * hours;
     }
 
     /** 20% салық. */
     @Override
     public double netPay() {
-        // TODO
-        return 0;
+        return grossPay() * (1 - 0.20);
     }
 }
