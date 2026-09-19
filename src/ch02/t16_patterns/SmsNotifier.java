@@ -4,7 +4,6 @@ public class SmsNotifier implements Notifier {
 
     @Override
     public String send(String message) {
-        // TODO: "SMS: " + message
-        return null;
+        return "SMS: " + message;
     }
 }

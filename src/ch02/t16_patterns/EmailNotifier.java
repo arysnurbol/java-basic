@@ -4,7 +4,6 @@ public class EmailNotifier implements Notifier {
 
     @Override
     public String send(String message) {
-        // TODO: "EMAIL: " + message
-        return null;
+        return "EMAIL: " + message;
     }
 }

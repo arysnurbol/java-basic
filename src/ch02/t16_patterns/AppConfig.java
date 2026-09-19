@@ -9,18 +9,19 @@ package ch02.t16_patterns;
  */
 public class AppConfig {
 
-    // TODO: private static AppConfig instance;
+    private static AppConfig instance;
 
     private String appName = "JavaPractice";
 
-    // TODO: конструкторды private қыл — сырттан new AppConfig() жасауға болмайды
-    AppConfig() {
+    private AppConfig() {
     }
 
     /** Жалғыз данасын қайтарады; әлі жасалмаса — жасайды. */
     public static AppConfig getInstance() {
-        // TODO
-        return null;
+        if (instance == null) {
+            instance = new AppConfig();
+        }
+        return instance;
     }
 
     public String getAppName() {
