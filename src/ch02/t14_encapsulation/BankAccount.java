@@ -8,29 +8,40 @@ package ch02.t14_encapsulation;
  */
 public class BankAccount {
 
-    // TODO: екі private өріс: owner (String), balance (double)
+    private String owner;
+    private double balance;
 
     /**
      * initialBalance теріс болса — IllegalArgumentException.
      * owner null немесе бос болса — IllegalArgumentException.
      */
     public BankAccount(String owner, double initialBalance) {
-        // TODO
+        if  (owner == null) {
+            throw new IllegalArgumentException("owner is null");
+        } else if  (owner.equals("")) {
+            throw new IllegalArgumentException("owner is empty");
+        }
+        if  (initialBalance < 0) {
+            throw new IllegalArgumentException("initialBalance is negative");
+        }
+        this.owner = owner;
+        this.balance = initialBalance;
     }
 
     public String getOwner() {
-        // TODO
-        return null;
+        return owner;
     }
 
     public double getBalance() {
-        // TODO
-        return 0;
+        return balance;
     }
 
     /** amount <= 0 болса — IllegalArgumentException. */
     public void deposit(double amount) {
-        // TODO
+        if (amount <= 0) {
+            throw new IllegalArgumentException("amount is negative");
+        }
+        balance += amount;
     }
 
     /**
@@ -38,6 +49,12 @@ public class BankAccount {
      * amount > balance болса — IllegalStateException.
      */
     public void withdraw(double amount) {
-        // TODO
+        if (amount <= 0) {
+            throw new IllegalArgumentException("amount is negative");
+        }
+        if  (amount > balance) {
+            throw new IllegalStateException("amount is greater than balance");
+        }
+        balance -= amount;
     }
 }

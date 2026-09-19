@@ -15,19 +15,16 @@ public final class Temperature {
     }
 
     public double getCelsius() {
-        // TODO
-        return 0;
+        return celsius;
     }
 
     /** Фаренгейтке айналдыру: c * 9 / 5 + 32. */
     public double getFahrenheit() {
-        // TODO
-        return 0;
+        return celsius * 1.8 + 32;
     }
 
     /** Осы объектіні ӨЗГЕРТПЕЙ, delta градусқа жылы ЖАҢА объект қайтарады. */
     public Temperature plus(double delta) {
-        // TODO
-        return null;
+        return new Temperature(getCelsius() + delta);
     }
 }
