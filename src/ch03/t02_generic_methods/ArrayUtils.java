@@ -1,6 +1,7 @@
 package ch03.t02_generic_methods;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Objects;
 
 /**
@@ -24,17 +25,32 @@ public class ArrayUtils {
      * Элемент null болса — "null" деп жазылсын (String.valueOf көмектеседі).
      */
     public static <T> String join(T[] items, String separator) {
-        return null; // TODO
+        if  (items == null || items.length == 0) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        for (T item : items) {
+            if (sb.length() > 0) {
+                sb.append(separator);
+            }
+            sb.append(String.valueOf(item));
+        }
+        return sb.toString();
     }
 
     /** Бірінші элемент. Массив null немесе бос болса — fallback. */
     public static <T> T firstOrDefault(T[] items, T fallback) {
-        return null; // TODO
+        if   (items == null || items.length == 0) {
+            return fallback;
+        }
+        return items[0];
     }
 
     /** i мен j орындарын алмастырады (массивтің ӨЗІН өзгертеді). */
     public static <T> void swap(T[] items, int i, int j) {
-        // TODO
+        T tmp = items[i];
+        items[i] = items[j];
+        items[j] = tmp;
     }
 
     /**
@@ -42,7 +58,16 @@ public class ArrayUtils {
      * null-мен де жұмыс істеуі керек, сондықтан == емес, {@link Objects#equals} қолдан.
      */
     public static <T> int countEquals(T[] items, T target) {
-        return 0; // TODO
+        if   (items == null || items.length == 0) {
+            return 0;
+        }
+        int count = 0;
+        for (T item : items) {
+            if (Objects.equals(item, target)) {
+                count++;
+            }
+        }
+        return count;
     }
 
     /**
@@ -50,7 +75,14 @@ public class ArrayUtils {
      * Ескерту: Arrays.asList() тіркелген өлшемді тізім қайтарады — оған add жасалмайды.
      */
     public static <T> List<T> toList(T[] items) {
-        return null; // TODO
+        if   (items == null || items.length == 0) {
+            return new ArrayList<>();
+        }
+        List<T> list = new ArrayList<>();
+        for (T item : items) {
+            list.add(item);
+        }
+        return list;
     }
 
     /**
@@ -58,6 +90,20 @@ public class ArrayUtils {
      * Екі бөлек тип параметрін қолдану қажет емес — екеуі де T[].
      */
     public static <T> boolean sameElements(T[] a, T[] b) {
-        return false; // TODO
+        if   (a == null && b == null) {
+            return true;
+        }
+        if   (a == null || b == null) {
+            return false;
+        }
+        if (a.length != b.length) {
+            return false;
+        }
+        for (int i = 0; i < a.length; i++) {
+            if (a[i] != b[i]) {
+                return false;
+            }
+        }
+        return true;
     }
 }
