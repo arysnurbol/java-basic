@@ -9,22 +9,24 @@ package ch03.t01_generic_class;
  */
 public class Pair<K, V> {
 
-    // TODO: екі final өріс — key (K) және value (V)
+    private final K key;
+    private final V value;
 
     public Pair(K key, V value) {
-        // TODO
+        this.key = key;
+        this.value = value;
     }
 
     public static <K, V> Pair<K, V> of(K key, V value) {
-        return null; // TODO
+        return new Pair<>(key, value);
     }
 
     public K getKey() {
-        return null; // TODO
+        return key;
     }
 
     public V getValue() {
-        return null; // TODO
+        return value;
     }
 
     /**
@@ -32,12 +34,12 @@ public class Pair<K, V> {
      * Назар аудар: қайтарылатын тип те ауысады — генериктің күші дәл осында.
      */
     public Pair<V, K> swap() {
-        return null; // TODO
+        return new Pair<>(value, key);
     }
 
     /** "(Aisha, 25)" пішімі. */
     @Override
     public String toString() {
-        return null; // TODO
+        return  "(" + key + ", " + value + ")";
     }
 }

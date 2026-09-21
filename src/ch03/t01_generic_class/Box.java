@@ -15,16 +15,16 @@ package ch03.t01_generic_class;
  */
 public class Box<T> {
 
-    // TODO: жалғыз өріс — T типті value
+    private T value;
 
     /** Бос жәшік. */
     public Box() {
-        // TODO
+        this.value = null;
     }
 
     /** Мәні бар жәшік. */
     public Box(T value) {
-        // TODO
+        this.value = value;
     }
 
     /**
@@ -32,30 +32,36 @@ public class Box<T> {
      * static метод класстың T-сын көре алмайды, сондықтан өзінікін жариялайды.
      */
     public static <T> Box<T> of(T value) {
-        return null; // TODO
+        return new Box<>(value);
     }
 
     /** Ішіндегі мән (бос болса — null). */
     public T get() {
-        return null; // TODO
+        return value;
     }
 
     public void set(T value) {
-        // TODO
+        this.value = value;
     }
 
     /** Ішінде мән жоқ па. */
     public boolean isEmpty() {
-        return false; // TODO
+        return value == null;
     }
 
     /** Мән бар болса сол, болмаса fallback. */
     public T getOrDefault(T fallback) {
-        return null; // TODO
+
+        if (isEmpty()) return fallback;
+        return get();
     }
 
     /** "Box[hello]" немесе бос болса "Box[empty]". */
     public String describe() {
-        return null; // TODO
+        if (value == null) {
+            return "Box[empty]";
+        }
+
+        return "Box[" + value + "]";
     }
 }
