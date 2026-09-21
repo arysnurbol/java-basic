@@ -19,11 +19,11 @@ public interface Transformer {
      * Алдымен осы, сосын next қолданылады: a.andThen(b).apply(x) == b.apply(a.apply(x)).
      */
     default Transformer andThen(Transformer next) {
-        return null; // TODO
+        return (input) -> next.apply(this.apply(input));
     }
 
     /** Кірісті өзгертпей қайтаратын дайын трансформер. */
     static Transformer identity() {
-        return null; // TODO
+        return (input) -> input;
     }
 }
