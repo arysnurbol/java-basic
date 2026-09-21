@@ -1,5 +1,8 @@
 package ch03.t04_generic_interface;
 
+
+import  java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,30 +21,35 @@ import java.util.Optional;
  */
 public class InMemoryRepository<T, ID> implements Repository<T, ID> {
 
-    // TODO: LinkedHashMap<ID, T> өрісі (final)
+    private final LinkedHashMap<ID, T> linkedHashMap = new LinkedHashMap<>();
 
     @Override
     public T save(ID id, T item) {
-        return null; // TODO
+        linkedHashMap.put(id, item);
+        return item;
     }
 
     @Override
     public Optional<T> findById(ID id) {
-        return null; // TODO
+        return Optional.ofNullable(linkedHashMap.get(id));
     }
 
     @Override
     public List<T> findAll() {
-        return null; // TODO
+        return new ArrayList<>(linkedHashMap.values());
     }
 
     @Override
     public boolean deleteById(ID id) {
-        return false; // TODO
+        if  (linkedHashMap.containsKey(id)) {
+            linkedHashMap.remove(id);
+            return true;
+        }
+        return false;
     }
 
     @Override
     public int count() {
-        return 0; // TODO
+        return linkedHashMap.size();
     }
 }
