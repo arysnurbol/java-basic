@@ -2,6 +2,7 @@ package ch03.t07_method_refs;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -30,12 +31,12 @@ public class MethodRefLab {
 
     /** 1-түрі: "42" -> 42. Кеңес: Integer::parseInt */
     public static Function<String, Integer> parser() {
-        return null; // TODO
+        return s -> Integer.parseInt(s);
     }
 
     /** 3-түрі: кез келген жолды үлкен әріпке. Кеңес: String::toUpperCase */
     public static Function<String, String> upperCaser() {
-        return null; // TODO
+        return s -> s.toUpperCase();
     }
 
     /**
@@ -43,17 +44,17 @@ public class MethodRefLab {
      * Кеңес: text::length — параметр қалмайды, өйткені объект ұсталып қалды.
      */
     public static Supplier<Integer> lengthOf(String text) {
-        return null; // TODO
+        return () -> text.length();
     }
 
     /** 4-түрі: шақырған сайын жаңа бос ArrayList. Кеңес: ArrayList::new */
     public static Supplier<List<String>> listFactory() {
-        return null; // TODO
+        return () -> new ArrayList<>();
     }
 
     /** 4-түрі, аргументі бар: жолдан StringBuilder жасайды. Кеңес: StringBuilder::new */
     public static Function<String, StringBuilder> builderFactory() {
-        return null; // TODO
+        return s -> new StringBuilder(s);
     }
 
     /**
@@ -61,12 +62,12 @@ public class MethodRefLab {
      * Бірінші аргумент методтың ИЕСІ болады. Кеңес: String::startsWith
      */
     public static BiFunction<String, String, Boolean> startsWith() {
-        return null; // TODO
+        return (s1, s2) -> s1.startsWith(s2);
     }
 
     /** Ұзындығы бойынша салыстырғыш. Кеңес: Comparator.comparingInt(String::length) */
     public static Comparator<String> byLength() {
-        return null; // TODO
+        return (s1, s2) -> Integer.compare(s1.length(), s2.length());
     }
 
     /**
@@ -75,6 +76,6 @@ public class MethodRefLab {
      * Жолдың біреуі сан болмаса — NumberFormatException өздігінен шығады, ұстама.
      */
     public static List<Integer> parseAll(List<String> raw) {
-        return null; // TODO
+        return raw.stream().map(Integer::parseInt).toList();
     }
 }
