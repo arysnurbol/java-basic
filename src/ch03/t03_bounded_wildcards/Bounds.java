@@ -29,12 +29,32 @@ public class Bounds {
      * <T extends Comparable<T>> болғандықтан ішінде compareTo қолдана аласың.
      */
     public static <T extends Comparable<T>> T max(List<T> items) {
-        return null; // TODO
+        if (items == null || items.isEmpty()) {
+            throw new IllegalArgumentException("can not be empty or null");
+        }
+        T max = items.get(0);
+
+        for (T item : items) {
+            if  (item.compareTo(max) > 0) {
+                max = item;
+            }
+        }
+        return max;
     }
 
     /** Ең кіші элемент. Шарттары max() сияқты. */
     public static <T extends Comparable<T>> T min(List<T> items) {
-        return null; // TODO
+        if (items == null || items.isEmpty()) {
+            throw new IllegalArgumentException("can not be empty or null");
+        }
+
+        T min = items.get(0);
+        for (T item : items) {
+            if (item.compareTo(min) < 0) {
+                min = item;
+            }
+        }
+        return min;
     }
 
     /**
@@ -42,7 +62,14 @@ public class Bounds {
      * Number-де intValue()/doubleValue() бар.
      */
     public static double sumOf(List<? extends Number> numbers) {
-        return 0; // TODO
+
+        if  (numbers == null) return 0;
+        double sum = 0;
+        for (Number number : numbers) {
+            sum += number.doubleValue();
+        }
+
+        return sum;
     }
 
     /**
@@ -50,7 +77,9 @@ public class Bounds {
      * ? super Integer болғандықтан List<Integer>, List<Number>, List<Object> — бәрі өтеді.
      */
     public static void addIntegers(List<? super Integer> target, int from, int to) {
-        // TODO
+        for (int i = from; i <= to; i++) {
+            target.add(i);
+        }
     }
 
     /**
@@ -58,7 +87,16 @@ public class Bounds {
      * Екі шектеу қатар: T әрі Number, әрі Comparable болуы керек (& арқылы).
      */
     public static <T extends Number & Comparable<T>> T clamp(T value, T min, T max) {
-        return null; // TODO
+        // Егер value min-нен кіші болса ( < 0), min-ді қайтарамыз
+        if (value.compareTo(min) < 0) {
+            return min;
+        }
+        // Егер value max-тан үлкен болса ( > 0), max-ты қайтарамыз
+        if (value.compareTo(max) > 0) {
+            return max;
+        }
+        // Әйтпесе өз мәнін қайтарамыз
+        return value;
     }
 
     /**
@@ -66,6 +104,11 @@ public class Bounds {
      * src дерек береді (extends), dst дерек қабылдайды (super).
      */
     public static <T> void copy(List<? extends T> src, List<? super T> dst) {
-        // TODO
+
+        if  (src == null || dst == null) return;
+
+        for (T srcItem : src) {
+            dst.add(srcItem);
+        }
     }
 }
