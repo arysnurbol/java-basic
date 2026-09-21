@@ -37,7 +37,7 @@ public class LambdaBasics {
      * Бір жолға сыюы керек.
      */
     public static Comparator<String> byLength() {
-        return null; // TODO
+        return (a, b) -> Integer.compare(a.length(), b.length());
     }
 
     /**
@@ -45,7 +45,7 @@ public class LambdaBasics {
      * Кеңес: Comparator.comparingInt(...).thenComparing(...) тізбегі.
      */
     public static Comparator<String> byLengthThenAlpha() {
-        return null; // TODO
+        return Comparator.comparingInt(String::length).thenComparing(Comparator.naturalOrder());
     }
 
     /**
@@ -53,12 +53,12 @@ public class LambdaBasics {
      * Реті — byLengthThenAlpha() бойынша.
      */
     public static List<String> sortedByLength(List<String> names) {
-        return null; // TODO
+        return names.stream().sorted(byLengthThenAlpha()).toList();
     }
 
     /** Кему реті бойынша ЖАҢА тізім. Кеңес: Comparator.reverseOrder(). */
     public static List<String> sortedDescending(List<String> names) {
-        return null; // TODO
+        return names.stream().sorted(Comparator.reverseOrder()).toList();
     }
 
     /**
@@ -66,7 +66,7 @@ public class LambdaBasics {
      * Кеңес: List.sort(Comparator).
      */
     public static void sortInPlaceByLength(List<String> names) {
-        // TODO
+        names.sort(byLength());
     }
 
     /**
@@ -75,6 +75,6 @@ public class LambdaBasics {
      * Назар аудар: Runnable ҚАЙТАРЫЛАДЫ, бірден орындалмайды.
      */
     public static Runnable greeter(StringBuilder sink, String name) {
-        return null; // TODO
+        return () -> sink.append("Salem, ").append(name).append("!");
     }
 }
