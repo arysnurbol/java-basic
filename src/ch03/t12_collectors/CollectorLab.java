@@ -3,6 +3,8 @@ package ch03.t12_collectors;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+
 
 /**
  * Тапсырма 12 — Коллекторлар (Collectors).
@@ -27,32 +29,35 @@ public class CollectorLab {
 
     /** "java, go, rust" түрінде біріктіреді. Кеңес: Collectors.joining(", "). */
     public static String joinWithCommas(List<String> items) {
-        return null; // TODO
+        return items.stream().collect(Collectors.joining(", "));
     }
 
     /** "[java, go]" — жақшалармен. Кеңес: joining-тің үш аргументті нұсқасы. */
     public static String joinBracketed(List<String> items) {
-        return null; // TODO
+        return items.stream().collect(Collectors.joining(", ", "[", "]"));
     }
 
     /** Ұзындығы бойынша топтау: 2 -> ["go"], 4 -> ["java", "rust"]. */
     public static Map<Integer, List<String>> groupByLength(List<String> items) {
-        return null; // TODO
+        return items.stream().collect(Collectors.groupingBy(String::length));
     }
 
     /** Бірінші әрпі -> сол әріптен басталатындардың САНЫ. Кеңес: groupingBy + counting. */
     public static Map<String, Long> countByFirstLetter(List<String> items) {
-        return null; // TODO
+        return items.stream().collect(Collectors.groupingBy(
+                item -> String.valueOf(item.charAt(0)),
+                Collectors.counting()
+        ));
     }
 
     /** Жұп/тақ бойынша бөлу. Кілттері ӘРҚАШАН true және false. */
     public static Map<Boolean, List<Integer>> partitionEven(List<Integer> numbers) {
-        return null; // TODO
+        return numbers.stream().collect(Collectors.partitioningBy(num -> num % 2 == 0));
     }
 
     /** Орташа ұзындық. Бос тізім -> 0.0. Кеңес: Collectors.averagingInt. */
     public static double averageLength(List<String> items) {
-        return 0; // TODO
+        return items.stream().collect(Collectors.averagingInt(String::length));
     }
 
     /**
@@ -60,11 +65,15 @@ public class CollectorLab {
      * (toMap-тің үшінші аргументі: (a, b) -> a).
      */
     public static Map<String, Integer> toLengthMap(List<String> items) {
-        return null; // TODO
+        return items.stream().collect(Collectors.toMap(
+                item -> item,
+                String::length,
+                (a, b) -> a
+        ));
     }
 
     /** Бірінші әріптердің жиыны. Кеңес: map + Collectors.toSet(). */
     public static Set<String> firstLetters(List<String> items) {
-        return null; // TODO
+        return items.stream().map(item -> String.valueOf(item.charAt(0))).collect(Collectors.toSet());
     }
 }

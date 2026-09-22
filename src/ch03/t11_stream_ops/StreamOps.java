@@ -30,7 +30,7 @@ public class StreamOps {
 
     /** Ұзындығы minLen-нен ҰЗЫН есімдерді үлкен әріппен, әліпби ретімен. */
     public static List<String> longNamesUpper(List<String> names, int minLen) {
-        return names.stream().filter(name -> name.length() > minLen).sorted().toList();
+        return names.stream().filter(name -> name.length() > minLen).map(String::toUpperCase).sorted().toList();
     }
 
     /** Алғашқы n жұп сан (кірістегі ретті сақтап). Кеңес: filter + limit. */
