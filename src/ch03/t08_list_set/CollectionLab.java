@@ -1,7 +1,12 @@
 package ch03.t08_list_set;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Тапсырма 08 — Java Collections Framework: List және Set.
@@ -23,17 +28,25 @@ public class CollectionLab {
 
     /** Массивтен ӨЗГЕРТУГЕ БОЛАТЫН ArrayList жасайды. */
     public static List<String> mutableList(String... items) {
-        return null; // TODO
+        return new ArrayList<>(Arrays.asList(items));
     }
 
     /** Қайталанбайтын элементтер, ҚОСЫЛУ реті сақталады. Кеңес: LinkedHashSet. */
     public static Set<String> uniqueKeepingOrder(List<String> items) {
-        return null; // TODO
+        LinkedHashSet<String> set = new LinkedHashSet<>();
+        for (String item : items) {
+            set.add(item);
+        }
+        return set;
     }
 
     /** Қайталанбайтын элементтер, ӘРҚАШАН сұрыпталған. Кеңес: TreeSet. */
     public static Set<String> sortedUnique(List<String> items) {
-        return null; // TODO
+        TreeSet<String> set = new TreeSet<>(Comparator.naturalOrder());
+        for (String item : items) {
+            set.add(item);
+        }
+        return set;
     }
 
     /**
@@ -44,21 +57,29 @@ public class CollectionLab {
      * Екеуін де біліп ал — бұл сұхбатта жиі сұралады.
      */
     public static int removeShorterThan(List<String> items, int min) {
-        return 0; // TODO
+        int originalSize = items.size();
+        items.removeIf(item -> item.length() < min);
+        return originalSize -  items.size();
     }
 
     /** ӨЗГЕРТУГЕ БОЛМАЙТЫН көшірме. Кеңес: List.copyOf. */
     public static List<String> readOnlyCopy(List<String> items) {
-        return null; // TODO
+        return List.copyOf(items);
     }
 
     /** Екі тізімнің ОРТАҚ элементтері, сұрыпталған күйде. Кеңес: Set.retainAll. */
     public static Set<String> intersection(List<String> a, List<String> b) {
-        return null; // TODO
+        Set<String> result = new TreeSet<>(a);
+        // Тек "b" тізімінде де бар элементтерді ғана алып қалады
+        result.retainAll(b);
+        return result;
     }
 
     /** a-да бар, бірақ b-да жоқ элементтер, сұрыпталған күйде. Кеңес: Set.removeAll. */
     public static Set<String> difference(List<String> a, List<String> b) {
-        return null; // TODO
+        Set<String> result = new TreeSet<>(a);
+        // Тек "b" тізімінде де бар элементтерді ғана алып қалады
+        result.removeAll(b);
+        return result;
     }
 }
