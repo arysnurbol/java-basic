@@ -3,6 +3,10 @@ package ch03.t10_queue_deque;
 import java.util.Deque;
 import java.util.List;
 import java.util.Queue;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.PriorityQueue;
+import java.util.Comparator;
 
 /**
  * Тапсырма 10 — Queue, Deque, PriorityQueue.

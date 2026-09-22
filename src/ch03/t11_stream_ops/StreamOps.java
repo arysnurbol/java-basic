@@ -2,6 +2,7 @@ package ch03.t11_stream_ops;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.ArrayList;
 
 /**
  * Тапсырма 11 — Stream API: құру, аралық және терминалдық операциялар.
@@ -29,22 +30,22 @@ public class StreamOps {
 
     /** Ұзындығы minLen-нен ҰЗЫН есімдерді үлкен әріппен, әліпби ретімен. */
     public static List<String> longNamesUpper(List<String> names, int minLen) {
-        return null; // TODO
+        return names.stream().filter(name -> name.length() > minLen).sorted().toList();
     }
 
     /** Алғашқы n жұп сан (кірістегі ретті сақтап). Кеңес: filter + limit. */
     public static List<Integer> firstNEven(List<Integer> numbers, int n) {
-        return null; // TODO
+        return numbers.stream().filter(number -> number % 2 == 0).limit(n).toList();
     }
 
     /** Қайталанбайтын, сұрыпталған элементтер. Кеңес: distinct + sorted. */
     public static List<String> distinctSorted(List<String> items) {
-        return null; // TODO
+        return items.stream().distinct().sorted().toList();
     }
 
     /** prefix-тен басталатын элементтердің саны. Кеңес: filter + count. */
     public static long countStartingWith(List<String> items, String prefix) {
-        return 0; // TODO
+        return items.stream().filter(item -> item.startsWith(prefix)).count();
     }
 
     /**
@@ -52,27 +53,27 @@ public class StreamOps {
      * Табылмаса Optional.empty() — null ҚАЙТАРМА.
      */
     public static Optional<String> firstLongerThan(List<String> items, int len) {
-        return null; // TODO
+        return items.stream().filter(item -> item.length() > len).findFirst();
     }
 
     /** Барлығы оң сан ба. Бос тізім -> true (allMatch-тің мінезі осындай). */
     public static boolean allPositive(List<Integer> numbers) {
-        return false; // TODO
+        return numbers.stream().allMatch(number -> number > 0);
     }
 
     /** Кемінде біреуі теріс пе. Бос тізім -> false. */
     public static boolean anyNegative(List<Integer> numbers) {
-        return false; // TODO
+        return numbers.stream().anyMatch(number -> number < 0);
     }
 
     /** Квадраттарының қосындысы. Кеңес: map + reduce(0, Integer::sum). */
     public static int sumOfSquares(List<Integer> numbers) {
-        return 0; // TODO
+        return numbers.stream().map(num -> num * num).reduce(0, Integer::sum);
     }
 
     /** Ең ұзын элемент; тең болса — БІРІНШІСІ. Бос тізім -> Optional.empty(). */
     public static Optional<String> longest(List<String> items) {
-        return null; // TODO
+        return items.stream().filter(item -> item.length() > 1).findFirst();
     }
 
     /**
@@ -80,6 +81,9 @@ public class StreamOps {
      * k тізімнен үлкен болса — бос тізім.
      */
     public static List<String> afterFirst(List<String> items, int k) {
-        return null; // TODO
+        if  (k == items.size()) {
+            return new ArrayList<>();
+        }
+        return items.stream().skip(k).toList();
     }
 }
