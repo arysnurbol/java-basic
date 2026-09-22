@@ -15,14 +15,18 @@ package ch03.t15_synchronization;
 public class SyncCounter implements Counter {
 
     // TODO: private int count;
+    private int count = 0;
 
     @Override
-    public void increment() {
+    public synchronized void increment() {
         // TODO: synchronized МЕТОД қыл
+        count++;
     }
 
     @Override
     public int get() {
-        return 0; // TODO: synchronized (this) { ... } БЛОГЫ
+        synchronized (this) {
+            return count;
+        }
     }
 }

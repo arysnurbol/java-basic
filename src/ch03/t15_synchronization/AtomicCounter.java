@@ -1,5 +1,7 @@
 package ch03.t15_synchronization;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * Тапсырма 15 — AtomicInteger арқылы санағыш.
  * Кітап: "Утилиты высокоуровневого параллелизма" (141 б.)
@@ -13,14 +15,16 @@ package ch03.t15_synchronization;
 public class AtomicCounter implements Counter {
 
     // TODO: private final AtomicInteger count = new AtomicInteger();
+    private final AtomicInteger count = new AtomicInteger(0); // 0 по умолчание алады
 
     @Override
     public void increment() {
         // TODO: incrementAndGet()
+        count.incrementAndGet();
     }
 
     @Override
     public int get() {
-        return 0; // TODO
+        return count.get();
     }
 }

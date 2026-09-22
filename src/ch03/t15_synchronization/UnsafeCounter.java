@@ -13,14 +13,16 @@ package ch03.t15_synchronization;
 public class UnsafeCounter implements Counter {
 
     // TODO: private int count;
+    private int count = 0;
 
     @Override
     public void increment() {
         // TODO: count++  (synchronized ҚОСПА!)
+        count++;
     }
 
     @Override
     public int get() {
-        return 0; // TODO
+        return count;
     }
 }
