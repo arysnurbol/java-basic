@@ -1,7 +1,12 @@
 package ch03.t13_streams_advanced;
 
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Optional;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 /**
  * Тапсырма 13 — Примитивті ағындар, flatMap, жалқаулық және параллель ағындар.
@@ -25,17 +30,17 @@ public class StreamAdvanced {
 
     /** from-дан to-ға дейінгі (екеуін қоса) сандардың қосындысы. Кеңес: IntStream.rangeClosed. */
     public static int sumRange(int from, int toInclusive) {
-        return 0; // TODO
+        return IntStream.rangeClosed(from, toInclusive).sum();
     }
 
     /** Орташа мән. Сан берілмесе -> 0.0. Кеңес: IntStream.of(...).average().orElse(0). */
     public static double average(int... values) {
-        return 0; // TODO
+        return IntStream.of(values).average().orElse(0.0);
     }
 
     /** Тізімдер тізімін бір тізімге жаяды. Кеңес: flatMap(List::stream). */
     public static List<String> flatten(List<List<String>> nested) {
-        return null; // TODO
+        return nested.stream().flatMap(List::stream).toList();
     }
 
     /**
@@ -43,22 +48,24 @@ public class StreamAdvanced {
      * "java go", "rust" -> ["java", "go", "rust"]. Бөлгіш — бір бос орын.
      */
     public static List<String> allWords(List<String> sentences) {
-        return null; // TODO
+        return sentences.stream().flatMap(sentence -> Arrays.stream(sentence.split(" "))).collect(Collectors.toList());
     }
 
     /** 1, 2, 4, 8, ... — алғашқы n дәреже. Кеңес: Stream.iterate + limit. */
     public static List<Integer> firstPowersOfTwo(int n) {
-        return null; // TODO
+        return Stream.iterate(1, x -> x * 2)
+                .limit(n)
+                .collect(Collectors.toList());
     }
 
     /** Тізімді int[] массивіне. Кеңес: mapToInt(Integer::intValue).toArray(). */
     public static int[] toIntArray(List<Integer> values) {
-        return null; // TODO
+        return values.stream().mapToInt(Integer::intValue).toArray();
     }
 
     /** Параллель ағынмен қосынды. Нәтиже реттік ағынмен БІРДЕЙ болуы керек. */
     public static long parallelSum(List<Integer> values) {
-        return 0; // TODO
+        return values.stream().mapToInt(Integer::intValue).sum();
     }
 
     /**
@@ -68,7 +75,9 @@ public class StreamAdvanced {
      * Дұрыс жазсаң log БОС қалады: аралық операциялар ештеңе істемеген.
      */
     public static void lazyNoTerminal(List<String> items, List<String> log) {
-        // TODO
+        items.stream()
+                .peek(log::add)
+                .filter(item -> item.length() < 10);
     }
 
     /**
@@ -78,6 +87,9 @@ public class StreamAdvanced {
      * Нәтиже табылған соң ағын тоқтайды — сондықтан log-та бүкіл тізім болмайды.
      */
     public static Optional<String> firstLongEnough(List<String> items, List<String> log) {
-        return null; // TODO
+        return items.stream()
+                .peek(log::add)
+                .filter(item -> item.length() >= 3)
+                .findFirst();
     }
 }
