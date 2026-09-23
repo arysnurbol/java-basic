@@ -1,6 +1,7 @@
 package ch03.t20_exceptions;
 
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Тапсырма 20 — Ерекше жағдайларды өңдеу.
@@ -25,7 +26,11 @@ public class ExceptionLab {
 
     /** Санға айналдырады; болмаса fallback. Кеңес: catch (NumberFormatException e). */
     public static int parseOrDefault(String raw, int fallback) {
-        return 0; // TODO
+        try {
+            return Integer.parseInt(raw);
+        } catch (NumberFormatException e) {
+            return fallback;
+        }
     }
 
     /**
@@ -36,7 +41,20 @@ public class ExceptionLab {
      * catch-та "catch", finally-де "finally" қос та, тізімді қайтар.
      */
     public static List<String> executionOrder(boolean shouldThrow) {
-        return null; // TODO
+        List<String> log = new ArrayList<>();
+        try {
+            log.add("try");
+            if (shouldThrow) {
+                // Егер true болса, қолмен қате лақтырамыз
+                throw new RuntimeException("Qate");
+            }
+        } catch (RuntimeException e) {
+            log.add("catch");
+        } finally {
+            // finally блогы қате болса да, болмаса да ӘРҚАШАН орындалады
+            log.add("finally");
+        }
+        return log;
     }
 
     /**
@@ -48,7 +66,20 @@ public class ExceptionLab {
      * Екеуін БІР catch-пен ұстап, e түріне қарай жауап қайтар.
      */
     public static String classify(String raw) {
-        return null; // TODO
+        try {
+            // raw null болса — trim() әдісі NullPointerException береді.
+            // raw "abc" болса — parseInt() әдісі NumberFormatException береді.
+            String trimmed = raw.trim();
+            Integer.parseInt(trimmed);
+            return trimmed;
+        } catch (NumberFormatException | NullPointerException e) {
+            // e ерекше жағдайының нақты қай типке жататынын тексереміз
+            if (e instanceof NullPointerException) {
+                return "null";
+            } else {
+                return "san emes";
+            }
+        }
     }
 
     /**
@@ -57,7 +88,14 @@ public class ExceptionLab {
      * Әйтпесе жаңа қалдықты қайтар.
      */
     public static double withdraw(double balance, double amount) throws InsufficientFundsException {
-        return 0; // TODO
+        if (amount < 0) {
+            throw new IllegalArgumentException("Somma teris bolmauy kerek");
+        }
+        if (amount > balance) {
+            // Өзіміздің checked ерекше жағдайымызды шақырамыз (сұралған ақша, бар ақша)
+            throw new InsufficientFundsException(amount, balance);
+        }
+        return balance - amount;
     }
 
     /**
@@ -67,7 +105,17 @@ public class ExceptionLab {
      * Назар аудар: жабылу реті — ашылудың КЕРІСІНШЕ.
      */
     public static List<String> resourceOrder() {
-        return null; // TODO
+        List<String> log = new ArrayList<>();
+
+        // try-with-resources жақша ішінде ресурстарды жариялаймыз
+        try (TrackedResource resA = new TrackedResource("A", log);
+             TrackedResource resB = new TrackedResource("B", log)) {
+
+            log.add("body"); // try блогының ішкі жұмысы
+
+        } // Осы жерде resB, сосын resA автоматты түрде жабылып, close() шақырылады
+
+        return log;
     }
 
     /**
@@ -79,6 +127,12 @@ public class ExceptionLab {
      * Неге маңызды: себепті жоғалтсаң, стектрейсте нақты не болғаны көрінбей қалады.
      */
     public static IllegalStateException wrapFailure(String raw) {
-        return null; // TODO
+        try {
+            Integer.parseInt(raw);
+            return null; // Егер сәтті өтсе, ештеңе қайтармаймыз (null)
+        } catch (NumberFormatException e) {
+            // e қатесін жаңа IllegalStateException конструкторына беріп, себебін сақтаймыз
+            return new IllegalStateException("Baptau qate: " + raw, e);
+        }
     }
 }

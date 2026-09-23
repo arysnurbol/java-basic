@@ -12,14 +12,17 @@ import java.util.List;
  */
 public class TrackedResource implements AutoCloseable {
 
-    // TODO: name (String) және log (List<String>) өрістері
+    public String name;
+    public List<String> log;
 
     public TrackedResource(String name, List<String> log) {
-        // TODO: өрістерді меншікте әрі log-қа "open:" + name жаз
+        this.name = name;
+        this.log = log;
+        this.log.add("open:" + name);
     }
 
     @Override
     public void close() {
-        // TODO: log-қа "close:" + name жаз
+        log.add("close:" + name);
     }
 }

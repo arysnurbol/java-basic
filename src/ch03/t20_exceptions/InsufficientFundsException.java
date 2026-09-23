@@ -20,23 +20,26 @@ package ch03.t20_exceptions;
  */
 public class InsufficientFundsException extends Exception {
 
-    // TODO: екі final өріс
+    private final double requested;
+    private final double available;
 
     public InsufficientFundsException(double requested, double available) {
-        super(""); // TODO: хабарламаны дұрыс құрастыр
-        // TODO: өрістерді меншікте
+        // Тапсырмада сұралған хабарлама форматын құрастырамыз:
+        super("Qarajat jetkiliksiz: surangan " + requested + ", bar " + available);
+        this.requested = requested;
+        this.available = available;
     }
 
     public double getRequested() {
-        return 0; // TODO
+        return requested;
     }
 
     public double getAvailable() {
-        return 0; // TODO
+        return available;
     }
 
     /** Қанша ақша жетпей тұр. */
     public double getShortfall() {
-        return 0; // TODO
+        return requested - available;
     }
 }
