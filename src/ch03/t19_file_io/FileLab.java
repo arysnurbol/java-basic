@@ -1,8 +1,16 @@
 package ch03.t19_file_io;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Тапсырма 19 — Кеңейтілген енгізу-шығару.
@@ -30,12 +38,18 @@ public class FileLab {
 
     /** Жолдарды файлға жазады (файл бар болса — үстінен жазады). */
     public static void writeLines(Path file, List<String> lines) throws IOException {
-        // TODO
+        // try-with-resources автоматты түрде ресурсты жабады
+        try (BufferedWriter writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8)) {
+            for (String line : lines) {
+                writer.write(line);
+                writer.newLine(); // Жолдар бірігіп кетпеуі үшін келесі жолға көшіру
+            }
+        }
     }
 
     /** Файлдағы барлық жолды оқиды. Кеңес: Files.readAllLines. */
     public static List<String> readLines(Path file) throws IOException {
-        return null; // TODO
+        return Files.readAllLines(file, StandardCharsets.UTF_8);
     }
 
     /**
@@ -45,7 +59,20 @@ public class FileLab {
      * Кеңес: Files.newBufferedReader(file) + try-with-resources + readLine() циклі.
      */
     public static String readWithBufferedReader(Path file) throws IOException {
-        return null; // TODO
+        StringBuilder sb = new StringBuilder();
+        // Ескі стильде BufferedReader қолдану және try-with-resources арқылы жабу
+        try (BufferedReader reader = Files.newBufferedReader(file, StandardCharsets.UTF_8)) {
+            String line;
+            boolean isFirst = true;
+            while ((line = reader.readLine()) != null) {
+                if (!isFirst) {
+                    sb.append("\n"); // Жолдардың арасына ғана "\n" қосу (соңында қалмайды)
+                }
+                sb.append(line);
+                isFirst = false;
+            }
+        }
+        return sb.toString();
     }
 
     /**
@@ -53,7 +80,14 @@ public class FileLab {
      * Кеңес: Files.writeString(..., StandardOpenOption.CREATE, StandardOpenOption.APPEND).
      */
     public static void appendLine(Path file, String line) throws IOException {
-        // TODO
+        // CREATE — файл жоқ болса құрады, APPEND — соңына жалғайды
+        Files.writeString(
+                file,
+                line + "\n",
+                StandardCharsets.UTF_8,
+                StandardOpenOption.CREATE,
+                StandardOpenOption.APPEND
+        );
     }
 
     /**
@@ -61,7 +95,10 @@ public class FileLab {
      * try-with-resources ІШІНДЕ қолдану МІНДЕТТІ, әйтпесе файл ашық қалады.
      */
     public static long countLines(Path file) throws IOException {
-        return 0; // TODO
+        // Файл ашық қалмауы үшін Stream-ді try-мен ораймыз
+        try (Stream<String> lines = Files.lines(file, StandardCharsets.UTF_8)) {
+            return lines.count();
+        }
     }
 
     /**
@@ -70,7 +107,15 @@ public class FileLab {
      * extension — нүктесімен беріледі: ".txt".
      */
     public static List<String> listFileNames(Path dir, String extension) throws IOException {
-        return null; // TODO
+        // Files.list() каталогы ашық қалмау үшін try-with-resources ішінде өңделеді
+        try (Stream<Path> stream = Files.list(dir)) {
+            return stream
+                    .filter(Files::isRegularFile) // Тек файлдарды аламыз (папкаларды емес)
+                    .map(path -> path.getFileName().toString()) // Тек атын аламыз
+                    .filter(name -> name.endsWith(extension)) // Кеңейтім бойынша сүзгілеу
+                    .sorted() // Сұрыптау
+                    .collect(Collectors.toList());
+        }
     }
 
     /**
@@ -78,11 +123,17 @@ public class FileLab {
      * Көшірілсе true.
      */
     public static boolean copyIfAbsent(Path src, Path dst) throws IOException {
-        return false; // TODO
+        // Егер мақсатты файл бұрыннан бар болса, тимейміз
+        if (Files.exists(dst)) {
+            return false;
+        }
+        // Көшіру
+        Files.copy(src, dst);
+        return true;
     }
 
     /** Файлдың байтпен өлшемі. Кеңес: Files.size. */
     public static long sizeOf(Path file) throws IOException {
-        return 0; // TODO
+        return  Files.size(file);
     }
 }
