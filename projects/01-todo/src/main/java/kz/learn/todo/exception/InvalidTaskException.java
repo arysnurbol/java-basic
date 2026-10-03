@@ -9,7 +9,6 @@ package kz.learn.todo.exception;
 public class InvalidTaskException extends RuntimeException {
 
     public InvalidTaskException(String message) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        super(message);
     }
 }

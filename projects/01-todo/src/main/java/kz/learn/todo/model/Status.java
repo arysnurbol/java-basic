@@ -17,7 +17,10 @@ public enum Status {
     DONE;
 
     public boolean canMoveTo(Status next) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return switch (this) {
+            case TODO -> next == IN_PROGRESS;
+            case IN_PROGRESS -> next == DONE || next == TODO;
+            case DONE -> false;
+        };
     }
 }

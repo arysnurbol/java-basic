@@ -6,15 +6,14 @@ package kz.learn.todo.exception;
  */
 public class TaskNotFoundException extends RuntimeException {
 
-    // TODO: өрістерді жаз
+    private final long taskId;
 
     public TaskNotFoundException(long taskId) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        super("Task not found: id=" + taskId);
+        this.taskId = taskId;
     }
 
     public long getTaskId() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return taskId;
     }
 }

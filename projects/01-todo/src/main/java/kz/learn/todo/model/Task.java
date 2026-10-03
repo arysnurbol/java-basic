@@ -23,7 +23,10 @@ import java.util.Objects;
  */
 public abstract class Task {
 
-    // TODO: өрістерді жаз
+    private final long id;
+    private String title;
+    private Priority priority;
+    private Status status;
 
     /**
      * title null немесе бос (тек бос орын да) болса — InvalidTaskException.
@@ -31,40 +34,37 @@ public abstract class Task {
      * title-дың шетіндегі бос орындар алынады (trim). Жаңа тапсырманың күйі әрқашан TODO.
      */
     protected Task(long id, String title, Priority priority) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+
+        this.id = id;
+        this.title = validateAndTrimTitle(title);
+        this.priority = validatePriority(priority);
+        this.status = Status.TODO;
     }
 
     public long getId() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return id;
     }
 
     public String getTitle() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return title;
     }
 
     public Priority getPriority() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return priority;
     }
 
     public Status getStatus() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return status;
     }
 
     /** Конструктордағыдай тексеріс және trim. */
     public void rename(String newTitle) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        this.title = validateAndTrimTitle(newTitle);
     }
 
     /** null — InvalidTaskException. */
     public void changePriority(Priority newPriority) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        this.priority = validatePriority(newPriority);
     }
 
     /**
@@ -72,25 +72,27 @@ public abstract class Task {
      * хабарламада қай күйден қай күйге екені жазылсын: "Cannot move from DONE to TODO".
      */
     public void moveTo(Status next) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        if (next == null) {
+            throw new InvalidTaskException("Next status can not be null!");
+        }
+        if (!this.status.canMoveTo(next)) {
+            throw new InvalidTaskException("Cannot move from " + this.status + " to " + next);
+        }
+        this.status = next;
     }
 
     /** moveTo(IN_PROGRESS) — кодты қайталама, moveTo-ны шақыр. */
     public void start() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        moveTo(Status.IN_PROGRESS);
     }
 
     /** moveTo(DONE) */
     public void complete() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        moveTo(Status.DONE);
     }
 
     public boolean isDone() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return status == Status.DONE;
     }
 
     /** today күні тапсырма мерзімінен өтіп кетті ме? Әр ұрпақ өзі шешеді. */
@@ -104,24 +106,38 @@ public abstract class Task {
      * DeadlineTask үшін мысал: "#2 [LOW] Pay bills (IN_PROGRESS), due 2026-10-05"
      */
     public final String describe() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return "#" + id + " [" + priority + "] " + title + " (" + status + ")" + details();
     }
 
     @Override
     public boolean equals(Object o) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return id == task.id;
     }
 
     @Override
     public int hashCode() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return Objects.hash(id);
     }
 
     @Override
     public String toString() {
         return describe();
+    }
+
+    private static String validateAndTrimTitle(String title) {
+        if (title == null || title.isBlank()) {
+            throw new InvalidTaskException("title can not be null or empty");
+        }
+        return title.trim();
+    }
+
+    private static Priority validatePriority(Priority priority) {
+        if (priority == null) {
+            throw new InvalidTaskException("priority can not be null");
+        }
+        return priority;
     }
 }
