@@ -25,63 +25,64 @@ import java.util.List;
  */
 public class TaskService {
 
-    // TODO: өрістерді жаз
+    private final TaskRepository taskRepository;
+    private long currentId = 1;
 
     public TaskService(TaskRepository repository) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        this.taskRepository = repository;
     }
 
     /** Жаңа SimpleTask жасап, сақтап, қайтарады. */
     public Task addSimple(String title, Priority priority) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        SimpleTask simpleTask = new SimpleTask(currentId++, title, priority);
+        return taskRepository.save(simpleTask);
     }
 
     /** Жаңа DeadlineTask жасап, сақтап, қайтарады. */
     public Task addWithDeadline(String title, Priority priority, LocalDate dueDate) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        DeadlineTask deadlineTask = new DeadlineTask(currentId++, title, priority, dueDate);
+        return taskRepository.save(deadlineTask);
     }
 
     /** Табылмаса — TaskNotFoundException. Кеңес: Optional.orElseThrow(...) */
     public Task getById(long id) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return taskRepository.findById(id)
+                .orElseThrow(() -> new TaskNotFoundException(id));
     }
 
     /** Қосылған ретімен барлығы. */
     public List<Task> getAll() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return taskRepository.findAll()
+                .stream()
+                .toList();
     }
 
     public void start(long id) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        Task localTask = getById(id);
+        localTask.start();
+        taskRepository.save(localTask);
     }
 
     public void complete(long id) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        Task localTask = getById(id);
+        localTask.complete();
+        taskRepository.save(localTask);
     }
 
     /** Табылмаса — TaskNotFoundException. */
     public void delete(long id) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        getById(id);
+        taskRepository.deleteById(id);
     }
 
     /** Берілген күйдегілер, қосылған ретімен. */
     public List<Task> findByStatus(Status status) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return getAll().stream().filter(task -> task.getStatus() == status).toList();
     }
 
     /** today күні кешіккендер, қосылған ретімен. */
     public List<Task> findOverdue(LocalDate today) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return getAll().stream().filter(task -> task.isOverdue(today)).toList();
     }
 
     /**
@@ -90,7 +91,10 @@ public class TaskService {
      * Кеңес: Comparator.comparing(...).reversed().thenComparing(...)
      */
     public List<Task> sortedByPriority() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return getAll().stream()
+                .sorted(
+                        Comparator.comparing(
+                                (Task task) -> task.getPriority().getWeight()).reversed()
+                                .thenComparing(Task::getId)).toList();
     }
 }
