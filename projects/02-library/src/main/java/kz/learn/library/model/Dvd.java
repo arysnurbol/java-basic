@@ -6,34 +6,29 @@ package kz.learn.library.model;
  */
 public class Dvd extends Item {
 
-    // TODO: өрістерді жаз
+    private final int minutes;
 
     public Dvd(long id, String title, int minutes) {
         super(id, title);
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        this.minutes = Check.positive(minutes,  "minutes");
     }
 
     public int getMinutes() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return minutes;
     }
 
     @Override
     public int loanDays() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return 3;
     }
 
     @Override
     public long dailyFine() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return 200;
     }
 
     @Override
     protected String details() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return ", " + minutes + " min";
     }
 }

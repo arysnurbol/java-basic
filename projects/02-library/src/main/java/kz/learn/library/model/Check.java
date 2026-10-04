@@ -20,8 +20,10 @@ public final class Check {
      * Әйтпесе — шетіндегі бос орындары алынған (trim) мәнді қайтарады.
      */
     public static String text(String value, String field) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        if (value == null || value.isBlank()) {
+            throw new IllegalArgumentException(field + " must not be blank");
+        }
+        return value.trim();
     }
 
     /**
@@ -29,7 +31,9 @@ public final class Check {
      * Әйтпесе value-ді өзгеріссіз қайтарады.
      */
     public static int positive(int value, String field) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        if (value <= 0) {
+            throw new IllegalArgumentException(field + " must be positive");
+        }
+        return value;
     }
 }

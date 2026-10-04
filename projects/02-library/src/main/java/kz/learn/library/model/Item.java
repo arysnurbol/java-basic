@@ -13,23 +13,22 @@ package kz.learn.library.model;
  */
 public abstract class Item implements Identifiable<Long> {
 
-    // TODO: өрістерді жаз
+    private final long id;
+    private final String title;
 
     /** title-ды Check.text(...) арқылы тексеріп, trim етіп сақта. */
     protected Item(long id, String title) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        this.id = id;
+        this.title = Check.text(title, "title");
     }
 
     @Override
     public Long getId() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return id;
     }
 
     public String getTitle() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return title;
     }
 
     /** Неше күнге беріледі. */
@@ -48,14 +47,14 @@ public abstract class Item implements Identifiable<Long> {
 
     @Override
     public boolean equals(Object o) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        if (this == o) return true;
+        if (!(o instanceof Item other)) return false;
+        return id == other.id;
     }
 
     @Override
     public int hashCode() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return (int) (id ^ (id >>> 32));
     }
 
     @Override

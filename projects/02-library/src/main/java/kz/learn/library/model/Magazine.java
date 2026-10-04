@@ -6,34 +6,29 @@ package kz.learn.library.model;
  */
 public class Magazine extends Item {
 
-    // TODO: өрістерді жаз
+    private final int issue;
 
     public Magazine(long id, String title, int issue) {
         super(id, title);
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        this.issue = Check.positive(issue, "issue");
     }
 
     public int getIssue() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return issue;
     }
 
     @Override
     public int loanDays() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return 7;
     }
 
     @Override
     public long dailyFine() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return 20;
     }
 
     @Override
     protected String details() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return ", No " + issue;
     }
 }
