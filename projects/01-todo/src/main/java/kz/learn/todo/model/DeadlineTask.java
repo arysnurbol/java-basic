@@ -15,28 +15,31 @@ import java.time.LocalDate;
  */
 public class DeadlineTask extends Task {
 
-    // TODO: өрістерді жаз
+    private final LocalDate dueDate;
 
     public DeadlineTask(long id, String title, Priority priority, LocalDate dueDate) {
         super(id, title, priority);
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        this.dueDate = validateDueDate(dueDate);
     }
 
     public LocalDate getDueDate() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return dueDate;
     }
 
     @Override
     public boolean isOverdue(LocalDate today) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return today.isAfter(dueDate) && !isDone();
     }
 
     @Override
     protected String details() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return ", due " + dueDate;
+    }
+
+    private static LocalDate validateDueDate(LocalDate dueDate) {
+        if (dueDate == null) {
+            throw new InvalidTaskException("due date cannot be null!");
+        }
+        return dueDate;
     }
 }

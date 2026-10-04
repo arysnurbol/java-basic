@@ -13,13 +13,11 @@ public class SimpleTask extends Task {
 
     @Override
     public boolean isOverdue(LocalDate today) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return false;
     }
 
     @Override
     protected String details() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return "";
     }
 }
