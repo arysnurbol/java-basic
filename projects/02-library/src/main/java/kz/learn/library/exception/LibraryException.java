@@ -10,7 +10,6 @@ package kz.learn.library.exception;
 public class LibraryException extends RuntimeException {
 
     public LibraryException(String message) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        super(message);
     }
 }

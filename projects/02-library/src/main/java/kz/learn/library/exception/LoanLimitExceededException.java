@@ -6,21 +6,20 @@ package kz.learn.library.exception;
  */
 public class LoanLimitExceededException extends LibraryException {
 
-    // TODO: өрістерді жаз
+    private final int limit;
+    private final String cardNumber;
 
     public LoanLimitExceededException(String cardNumber, int limit) {
-        super("TODO"); // TODO: хабарламаны дұрыс құрастыр
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        super("Loan limit exceeded: " + cardNumber + " (max " + limit + ")");
+        this.cardNumber = cardNumber;
+        this.limit = limit;
     }
 
     public String getCardNumber() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return cardNumber;
     }
 
     public int getLimit() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return limit;
     }
 }

@@ -6,16 +6,16 @@ package kz.learn.library.exception;
  */
 public class ItemNotAvailableException extends LibraryException {
 
-    // TODO: өрістерді жаз
+    private final long itemId;
 
     public ItemNotAvailableException(long itemId) {
-        super("TODO"); // TODO: хабарламаны дұрыс құрастыр
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+
+        super("Item is already on loan: id=" + itemId);
+        this.itemId = itemId;
+
     }
 
     public long getItemId() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return itemId;
     }
 }

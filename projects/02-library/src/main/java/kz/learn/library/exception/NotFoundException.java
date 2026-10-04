@@ -8,21 +8,20 @@ package kz.learn.library.exception;
  */
 public class NotFoundException extends LibraryException {
 
-    // TODO: өрістерді жаз
+    private final String entity;
+    private final Object id;
 
     public NotFoundException(String entity, Object id) {
-        super("TODO"); // TODO: хабарламаны дұрыс құрастыр
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        super(entity + " not found: " + id);
+        this.entity = entity;
+        this.id = id;
     }
 
     public String getEntity() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return entity;
     }
 
     public Object getId() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return id;
     }
 }
