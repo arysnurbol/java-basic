@@ -16,29 +16,26 @@ import java.util.Optional;
  */
 public class InMemoryTaskRepository implements TaskRepository {
 
-    // TODO: өрістерді жаз
+    private final Map<Long, Task> map = new LinkedHashMap<>();
 
     @Override
     public Task save(Task task) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        map.put(task.getId(), task);
+        return task;
     }
 
     @Override
     public Optional<Task> findById(long id) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return Optional.ofNullable(map.get(id));
     }
 
     @Override
     public List<Task> findAll() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return new ArrayList<>(map.values());
     }
 
     @Override
     public boolean deleteById(long id) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return map.remove(id) != null;
     }
 }
