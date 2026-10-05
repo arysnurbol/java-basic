@@ -2,6 +2,7 @@ package kz.learn.bank.model;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Objects;
 
 /**
  * Ақша сомасы (теңгемен) — IMMUTABLE VALUE OBJECT.
@@ -27,44 +28,42 @@ public final class Money implements Comparable<Money> {
     /** Конструктор дайын болғанда ғана жұмыс істейді (static өріс класс жүктелгенде жасалады). */
     public static final Money ZERO = new Money(BigDecimal.ZERO);
 
-    // TODO: өрісті жаз
+    private final BigDecimal amount;
 
     /** amount-ты SCALE-ге HALF_EVEN-мен келтіріп сақта. */
     private Money(BigDecimal amount) {
-        // TODO
+        Objects.requireNonNull(amount, "amount cannot be null");
+        // 1-ҚАТЕ: Конструктор масштабты келтіреді және HALF_EVEN-мен дөңгелектейді
+        this.amount = amount.setScale(SCALE, RoundingMode.HALF_EVEN);
     }
 
     /** "1234.5" -> 1234.50. Сан емес мәтін -> NumberFormatException (ол IllegalArgumentException-ның ұрпағы). */
     public static Money of(String amount) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return new Money(new BigDecimal(amount));
     }
 
     /** 100 -> 100.00. Кеңес: BigDecimal.valueOf(long) */
     public static Money of(long amount) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return new Money(BigDecimal.valueOf(amount));
     }
 
     public BigDecimal amount() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return amount;
     }
 
     public Money plus(Money other) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        Objects.requireNonNull(other, "other money cannot be null");
+        return new Money(amount.add(other.amount));
     }
 
     public Money minus(Money other) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        Objects.requireNonNull(other, "other money cannot be null");
+        return new Money(amount.subtract(other.amount));
     }
 
     /** Таңбасын ауыстырады: 100 -> -100. */
     public Money negate() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return new Money(amount.negate());
     }
 
     /**
@@ -73,38 +72,41 @@ public final class Money implements Comparable<Money> {
      * Кеңес: 100-ге бөлу әрқашан дәл (шексіз бөлшек болмайды), дөңгелектеуді конструктор жасайды.
      */
     public Money percent(BigDecimal percent) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        Objects.requireNonNull(percent, "percent cannot be null");
+        // 2-ҚАТЕ: Формула дұрысталды (amount * percent / 100).
+        // Дөңгелектеуді конструктор өзі реттейтіндіктен, жай ғана HUNDRED-ке бөлеміз.
+        BigDecimal result = amount.multiply(percent).divide(HUNDRED);
+        return new Money(result);
     }
 
     /** Екеуінің үлкені (тең болса — this). */
     public Money max(Money other) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        Objects.requireNonNull(other, "other money cannot be null");
+        // БАСТЫ ҚАТЕ: assertSame тестінен өту үшін жаңа объект жасамай,
+        // compareTo арқылы дәл сол нысанның сілтемесін (this немесе other) қайтарамыз.
+        return this.compareTo(other) >= 0 ? this : other;
     }
 
     /** > 0. Кеңес: BigDecimal.signum() */
     public boolean isPositive() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        // ҰСАҚ ЕСКЕРТУ: signum() қолдану қысқа әрі тиімді
+        return amount.signum() > 0;
     }
 
     /** < 0 */
     public boolean isNegative() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return amount.signum() < 0;
     }
 
     /** this > other (қатаң). */
     public boolean isGreaterThan(Money other) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        Objects.requireNonNull(other, "other money cannot be null");
+        return amount.compareTo(other.amount) > 0;
     }
 
     @Override
     public int compareTo(Money other) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return amount.compareTo(other.amount);
     }
 
     /**
@@ -114,20 +116,20 @@ public final class Money implements Comparable<Money> {
      */
     @Override
     public boolean equals(Object o) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        if (this == o) return true;
+        if (!(o instanceof Money money)) return false;
+        return amount.equals(money.amount);
     }
 
     @Override
     public int hashCode() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return amount.hashCode();
     }
 
     /** Пішім: "1234.50 ₸". Кеңес: toPlainString() (toString() үлкен санда 1E+3 жазуы мүмкін). */
     @Override
     public String toString() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        // 3-ҚАТЕ: toPlainString() қолданылды және соңына талап етілген валюта белгісі қосылды.
+        return amount.toPlainString() + " ₸";
     }
 }
