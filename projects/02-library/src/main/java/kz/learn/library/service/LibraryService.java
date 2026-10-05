@@ -33,30 +33,32 @@ import java.util.stream.Collectors;
  */
 public class LibraryService {
 
-    // TODO: өрістерді жаз
+    private final Repository<Item, Long> itemLongRepository;
+    private final Repository<Member, String> memberLongRepository;
+    private final Repository<Loan, Long> loanLongRepository;
+    private long itemId = 1;
+    private long loanId = 1;
 
     public LibraryService(Repository<Item, Long> items,
                           Repository<Member, String> members,
                           Repository<Loan, Long> loans) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        this.itemLongRepository = items;
+        this.memberLongRepository = members;
+        this.loanLongRepository = loans;
     }
 
     // ---------------------------------------------------------------- Қадам 6: негізгі операциялар
 
     public Book addBook(String title, String author) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return saveItem(new Book(itemId++, title, author));
     }
 
     public Magazine addMagazine(String title, int issue) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return saveItem(new Magazine(itemId++, title, issue));
     }
 
     public Dvd addDvd(String title, int minutes) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return saveItem(new Dvd(itemId++, title, minutes));
     }
 
     /**
@@ -66,36 +68,35 @@ public class LibraryService {
      * Назар аудар: сәтсіз жасалған экземпляр (бос атау) id-ны "жеп қояды" — бұл қалыпты.
      */
     private <I extends Item> I saveItem(I item) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        itemLongRepository.save(item);
+        return item;
     }
 
     /** Билет нөмірі бос емес; бұрын тіркелген болса — LibraryException("Member already exists: S-1"). */
     public Member registerStudent(String cardNumber, String name) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return register(new StudentMember(cardNumber, name));
     }
 
     public Member registerRegular(String cardNumber, String name) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return register(new RegularMember(cardNumber, name));
     }
 
     private Member register(Member member) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        if (memberLongRepository.existsById(member.getId())) {
+            throw new LibraryException("Member already exists: " + member.getId());
+        }
+
+        return memberLongRepository.save(member);
     }
 
     /** Табылмаса — NotFoundException("Item", id). */
     public Item getItem(long id) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return getOrThrow(itemLongRepository, id, "Item");
     }
 
     /** Табылмаса — NotFoundException("Member", cardNumber). */
     public Member getMember(String cardNumber) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return getOrThrow(memberLongRepository, cardNumber, "Member");
     }
 
     /**
@@ -104,8 +105,8 @@ public class LibraryService {
      * Кеңес: repo.findById(id).orElseThrow(() -> ...)
      */
     private static <T extends Identifiable<ID>, ID> T getOrThrow(Repository<T, ID> repo, ID id, String entity) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return repo.findById(id)
+                .orElseThrow(() -> new NotFoundException(entity, id));
     }
 
     /**
@@ -117,8 +118,19 @@ public class LibraryService {
      * Жаңа Loan жасап, сақтап, қайтарады.
      */
     public Loan lend(long itemId, String cardNumber, LocalDate today) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        Item item = getItem(itemId);
+        Member member = getMember(cardNumber);
+
+        if (activeLoanOf(itemId).isPresent()) {
+            throw new ItemNotAvailableException(itemId);
+        }
+
+        if (activeLoans(cardNumber).size() >= member.maxLoans()) {
+            throw new LoanLimitExceededException(member.getId(), member.maxLoans());
+        }
+
+        Loan loan = new Loan(loanId++, item, member, today);
+        return loanLongRepository.save(loan);
     }
 
     /**
@@ -127,20 +139,28 @@ public class LibraryService {
      * экземпляр қолда емес — NotFoundException("Active loan for item", id).
      */
     public long returnItem(long itemId, LocalDate today) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        getItem(itemId);
+
+        Loan activeLoan = activeLoanOf(itemId)
+                .orElseThrow(() -> new NotFoundException("Active loan for item", itemId));
+
+        activeLoan.markReturned(today);
+        return activeLoan.fine(today);
     }
 
     /** Осы экземплярдың қайтарылмаған Loan-ы. Кеңес: loans.findWhere(...) */
     private Optional<Loan> activeLoanOf(long itemId) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return loanLongRepository.findWhere(loan ->
+                loan.getItem().getId() == itemId && !loan.isReturned()
+        ).stream().findFirst();
     }
 
     /** Оқырманның қайтарылмаған Loan-дары, берілген ретімен. Оқырман жоқ — NotFoundException. */
     public List<Loan> activeLoans(String cardNumber) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        Member member = getMember(cardNumber);
+        return loanLongRepository.findWhere(loan ->
+                loan.getMember().equals(member) && !loan.isReturned()
+        );
     }
 
     // ---------------------------------------------------------------- Қадам 7: есептер (Collections + Stream)

@@ -109,7 +109,7 @@ public class Loan implements Identifiable<Long> {
         if (days == 0) {
             return 0;
         }
-        
+
         long baseFine = days * item.dailyFine();
 
         return member.applyDiscount(baseFine);
