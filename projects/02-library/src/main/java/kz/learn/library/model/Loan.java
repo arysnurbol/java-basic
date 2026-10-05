@@ -16,49 +16,51 @@ import java.util.Objects;
  */
 public class Loan implements Identifiable<Long> {
 
-    // TODO: өрістерді жаз
+    private final Long id;
+    private final Item item;
+    private final Member member;
+    private final LocalDate loanDate;
+    private final LocalDate dueDate;
+    private LocalDate returnDate = null;
 
     /** item, member, loanDate — null болмайды: Objects.requireNonNull(x, "item") -> NullPointerException. */
     public Loan(long id, Item item, Member member, LocalDate loanDate) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        this.id = id;
+        this.item = Objects.requireNonNull(item, "item cannot be null");
+        this.member = Objects.requireNonNull(member, "member cannot be null");
+        this.loanDate = Objects.requireNonNull(loanDate, "loanDate cannot be null");
+
+        this.dueDate = loanDate.plusDays(item.loanDays());
     }
 
     @Override
     public Long getId() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return id;
     }
 
     public Item getItem() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return item;
     }
 
     public Member getMember() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return member;
     }
 
     public LocalDate getLoanDate() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return loanDate;
     }
 
     public LocalDate getDueDate() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return dueDate;
     }
 
     /** Қайтарылмаса — null. */
     public LocalDate getReturnDate() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return returnDate;
     }
 
     public boolean isReturned() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return returnDate != null;
     }
 
     /**
@@ -67,8 +69,15 @@ public class Loan implements Identifiable<Long> {
      * date < loanDate болса — LibraryException("Return date is before loan date").
      */
     public void markReturned(LocalDate date) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        Objects.requireNonNull(date, "Return date cannot be null");
+
+        if (date.isBefore(loanDate)) {
+            throw new LibraryException("Return date is before loan date");
+        }
+        if (isReturned()) {
+            throw new LibraryException("Loan already returned: id=" + id);
+        }
+        this.returnDate = date;
     }
 
     /**
@@ -77,14 +86,18 @@ public class Loan implements Identifiable<Long> {
      * Кеңес: ChronoUnit.DAYS.between(dueDate, end)
      */
     public long overdueDays(LocalDate today) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        LocalDate endPoint = isReturned() ? returnDate : today;
+
+        if (endPoint.isBefore(dueDate) || endPoint.isEqual(dueDate)) {
+            return 0;
+        }
+
+        return ChronoUnit.DAYS.between(dueDate, endPoint);
     }
 
     /** Әлі қайтарылмаған ЖӘНЕ мерзімі өткен. */
     public boolean isOverdue(LocalDate today) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return dueDate.isBefore(today) && !isReturned();
     }
 
     /**
@@ -92,20 +105,26 @@ public class Loan implements Identifiable<Long> {
      * Мұнда instanceof ЖАЗБА — жұмысты Item мен Member-ге тапсыр.
      */
     public long fine(LocalDate today) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        long days = overdueDays(today);
+        if (days == 0) {
+            return 0;
+        }
+        
+        long baseFine = days * item.dailyFine();
+
+        return member.applyDiscount(baseFine);
     }
 
     @Override
     public boolean equals(Object o) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        if (this == o) return true;
+        if (!(o instanceof Loan other)) return false;
+        return id.equals(other.id);
     }
 
     @Override
     public int hashCode() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return Objects.hash(id);
     }
 
     /** ДАЙЫН. Пішім: "L1: #3 Book: Clean Code, Robert Martin -> S-1, due 2026-10-15" (+ ", returned ...") */
