@@ -19,29 +19,30 @@ import java.util.Optional;
  */
 public class InMemoryRepository<T extends Identifiable<ID>, ID> implements Repository<T, ID> {
 
-    // TODO: өрістерді жаз
+    private final Map<ID, T> map = new LinkedHashMap<>();
 
     @Override
     public T save(T entity) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        map.put(entity.getId(), entity);
+        return entity;
     }
 
     @Override
     public Optional<T> findById(ID id) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return Optional.ofNullable(map.get(id));
     }
 
     @Override
     public List<T> findAll() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return new ArrayList<>(map.values());
     }
 
     @Override
     public boolean deleteById(ID id) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        if (map.containsKey(id)) {
+            map.remove(id);
+            return true;
+        }
+        return false;
     }
 }

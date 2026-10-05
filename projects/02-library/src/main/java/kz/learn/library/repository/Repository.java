@@ -36,8 +36,7 @@ public interface Repository<T extends Identifiable<ID>, ID> {
      * findById(...) арқылы жаз.
      */
     default boolean existsById(ID id) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return findById(id).isPresent();
     }
 
     /**
@@ -47,7 +46,6 @@ public interface Repository<T extends Identifiable<ID>, ID> {
      * Predicate<Item> беруге болады — Item туралы шарт Book үшін де дұрыс (PECS: Consumer Super).
      */
     default List<T> findWhere(Predicate<? super T> condition) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return findAll().stream().filter(condition).toList();
     }
 }
