@@ -21,7 +21,6 @@ public interface FeePolicy {
 
     /** Комиссиясыз тариф. Кеңес: лямбда қайтар. */
     static FeePolicy none() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return amount -> Money.ZERO;
     }
 }
