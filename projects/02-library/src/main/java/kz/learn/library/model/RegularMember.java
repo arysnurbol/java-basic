@@ -12,7 +12,6 @@ public class RegularMember extends Member {
 
     @Override
     public int maxLoans() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return 5;
     }
 }

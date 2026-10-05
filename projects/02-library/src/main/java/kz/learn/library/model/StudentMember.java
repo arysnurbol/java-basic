@@ -11,13 +11,11 @@ public class StudentMember extends Member {
 
     @Override
     public int maxLoans() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return 3;
     }
 
     @Override
     public long applyDiscount(long fine) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return fine / 2;
     }
 }

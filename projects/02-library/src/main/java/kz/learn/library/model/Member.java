@@ -14,22 +14,21 @@ package kz.learn.library.model;
  */
 public abstract class Member implements Identifiable<String> {
 
-    // TODO: өрістерді жаз
+    private final String name;
+    private final String cardNumber;
 
     protected Member(String cardNumber, String name) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        this.cardNumber = Check.text(cardNumber, "cardNumber");
+        this.name = Check.text(name, "name");
     }
 
     @Override
     public String getId() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return cardNumber;
     }
 
     public String getName() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return name;
     }
 
     /** Бір уақытта ең көп неше экземпляр ұстай алады. */
@@ -37,20 +36,19 @@ public abstract class Member implements Identifiable<String> {
 
     /** Есептелген айыппұлға жеңілдік қолданады. Әдепкі — жеңілдік жоқ. */
     public long applyDiscount(long fine) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return fine;
     }
 
     @Override
     public boolean equals(Object o) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        if (this == o) return true;
+        if (!(o instanceof Member other)) return false;
+        return cardNumber.equals(other.cardNumber);
     }
 
     @Override
     public int hashCode() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return cardNumber.hashCode();
     }
 
     /** ДАЙЫН. Пішім: "S-1 Aru (StudentMember)" */
