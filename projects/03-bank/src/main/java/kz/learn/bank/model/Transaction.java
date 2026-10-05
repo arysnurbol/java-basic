@@ -1,6 +1,7 @@
 package kz.learn.bank.model;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * Шоттағы бір операция — RECORD (Java 16+).
@@ -26,13 +27,18 @@ public record Transaction(long id, TransactionType type, Money amount, Money bal
      *  - description: null -> "", әйтпесе strip(). Параметрге қайта меншікте: description = ...;
      */
     public Transaction {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        Objects.requireNonNull(type, "type");
+        Objects.requireNonNull(amount, "amount");
+        Objects.requireNonNull(balanceAfter, "balanceAfter");
+        Objects.requireNonNull(at, "at");
+        if (!amount.isPositive()) {
+            throw new IllegalArgumentException("amount must be positive");
+        }
+        description = description == null ? "" : description.strip();
     }
 
     /** Таңбасы бар сома: кіріс — оң, шығыс — теріс. Кеңес: type.isCredit(), amount.negate(). */
     public Money signedAmount() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return type.isCredit() ? amount : amount.negate();
     }
 }

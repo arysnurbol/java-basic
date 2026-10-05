@@ -7,16 +7,14 @@ package kz.learn.bank.exception;
  */
 public class AccountNotFoundException extends BankException {
 
-    // TODO: өрістерді жаз
+    private final String number;
 
     public AccountNotFoundException(String number) {
-        super("TODO"); // TODO: хабарламаны дұрыс құрастыр
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        super("Account not found: " + number);
+        this.number = number;
     }
 
     public String getNumber() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return number;
     }
 }

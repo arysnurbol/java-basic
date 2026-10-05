@@ -11,26 +11,26 @@ import kz.learn.bank.model.Money;
  */
 public class InsufficientFundsException extends BankException {
 
-    // TODO: өрістерді жаз
+    private final String number;
+    private final Money requested;
+    private final Money available;
 
     public InsufficientFundsException(String number, Money requested, Money available) {
-        super("TODO"); // TODO: хабарламаны дұрыс құрастыр
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        super("Insufficient funds on " + number + ": requested " + requested + ", available " + available);
+        this.number = number;
+        this.requested = requested;
+        this.available = available;
     }
 
     public String getNumber() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return number;
     }
 
     public Money getRequested() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return requested;
     }
 
     public Money getAvailable() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return available;
     }
 }

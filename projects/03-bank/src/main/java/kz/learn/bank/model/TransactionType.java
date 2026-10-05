@@ -11,14 +11,13 @@ public enum TransactionType {
     TRANSFER_OUT(false),
     FEE(false);
 
-    // TODO: өрісті жаз
+    private final boolean credit;
 
     TransactionType(boolean credit) {
-        // TODO: өрісті сақта (мұнда exception лақтырма — enum жүктелмей қалады)
+        this.credit = credit;
     }
 
     public boolean isCredit() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return credit;
     }
 }

@@ -7,6 +7,6 @@ package kz.learn.bank.exception;
 public class BankException extends RuntimeException {
 
     public BankException(String message) {
-        super("TODO"); // TODO: хабарламаны ата-класқа бер
+        super(message);
     }
 }
