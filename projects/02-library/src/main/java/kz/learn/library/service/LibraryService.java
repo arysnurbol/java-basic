@@ -167,14 +167,13 @@ public class LibraryService {
 
     /** Қазір қолда емес экземплярлар, қосылған ретімен. */
     public List<Item> availableItems() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return itemLongRepository.findWhere(item -> activeLoanOf(item.getId()).isEmpty());
     }
 
     /** Атауында query бар экземплярлар (үлкен/кіші әріпке қарамай), қосылған ретімен. */
     public List<Item> search(String query) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        String needle = query.trim().toLowerCase();
+        return itemLongRepository.findWhere(item -> item.getTitle().toLowerCase().contains(needle));
     }
 
     /**
@@ -182,8 +181,11 @@ public class LibraryService {
      * алдымен ең көп кешіккені; кешігуі тең болса — Loan id бойынша өсу ретімен.
      */
     public List<Loan> overdueLoans(LocalDate today) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return loanLongRepository.findWhere(loan -> loan.isOverdue(today)).stream()
+                .sorted(Comparator.comparingLong((Loan loan) -> loan.overdueDays(today))
+                        .reversed()
+                        .thenComparing(Loan::getId))
+                .toList();
     }
 
     /**
@@ -192,8 +194,11 @@ public class LibraryService {
      * Кеңес: Collectors.groupingBy(..., TreeMap::new, Collectors.summingLong(...))
      */
     public Map<String, Long> finesByMember(LocalDate today) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return loanLongRepository.findWhere(loan -> loan.fine(today) > 0).stream()
+                .collect(Collectors.groupingBy(
+                        loan -> loan.getMember().getId(),
+                        TreeMap::new,
+                        Collectors.summingLong(loan -> loan.fine(today))));
     }
 
     /**
@@ -202,7 +207,14 @@ public class LibraryService {
      * Кеңес: groupingBy(Loan::getItem, counting()) — Map<Item, Long>; бұл Item.equals/hashCode-қа сүйенеді!
      */
     public List<Item> mostPopular(int limit) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        Map<Item, Long> counts = loanLongRepository.findAll().stream()
+                .collect(Collectors.groupingBy(Loan::getItem, Collectors.counting()));
+
+        return counts.entrySet().stream()
+                .sorted(Map.Entry.<Item, Long>comparingByValue().reversed()
+                        .thenComparing(entry -> entry.getKey().getId()))
+                .limit(limit)
+                .map(Map.Entry::getKey)
+                .toList();
     }
 }
