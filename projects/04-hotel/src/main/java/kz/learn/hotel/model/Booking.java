@@ -20,7 +20,14 @@ import java.util.Objects;
  */
 public class Booking implements Identifiable<String> {
 
-    // TODO: өрістерді жаз
+    private final String id;
+    private final Room room;
+    private final String guest;
+    private final int guests;
+    private final DateRange stay;
+    private final Money total;
+    private BookingStatus status;
+    private Money refund;
 
     /**
      * Тексеріс реті:
@@ -32,56 +39,63 @@ public class Booking implements Identifiable<String> {
      * Содан total = room.priceFor(stay).
      */
     public Booking(String id, Room room, String guest, int guests, DateRange stay) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        this.id = requireText(id, "id");
+        this.guest = requireText(guest, "guest");
+        this.room = Objects.requireNonNull(room, "room");
+        this.stay = Objects.requireNonNull(stay, "stay");
+        if (guests < 1) {
+            throw new IllegalArgumentException("guests must be positive");
+        }
+        if (guests > room.capacity()) {
+            throw new IllegalArgumentException("Room " + room.getId() + " fits at most " + room.capacity() + " guests");
+        }
+        int maxNights = HotelPolicy.getInstance().maxNights();
+        if (stay.nights() > maxNights) {
+            throw new IllegalArgumentException("Stay must not exceed " + maxNights + " nights");
+        }
+        this.guests = guests;
+        this.total = room.priceFor(stay);
+        this.status = BookingStatus.CONFIRMED;
+        this.refund = Money.ZERO;
     }
 
     /** Бронь нөмірі. */
     @Override
     public String getId() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return id;
     }
 
     public Room getRoom() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return room;
     }
 
     public String getGuest() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return guest;
     }
 
     public int getGuests() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return guests;
     }
 
     public DateRange getStay() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return stay;
     }
 
     public Money getTotal() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return total;
     }
 
     public BookingStatus getStatus() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return status;
     }
 
     public Money getRefund() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return refund;
     }
 
     /** status == CONFIRMED. */
     public boolean isActive() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return status == BookingStatus.CONFIRMED;
     }
 
     /**
@@ -89,8 +103,7 @@ public class Booking implements Identifiable<String> {
      * Болдырылмаған бронь ештеңені бөгемейді — бөлме қайта босайды.
      */
     public boolean blocks(DateRange other) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return isActive() && stay.overlaps(other);
     }
 
     /**
@@ -101,8 +114,12 @@ public class Booking implements Identifiable<String> {
      * Қайтарады: refund.
      */
     public Money cancel(LocalDate today) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        if (!isActive()) {
+            throw new HotelException("Booking " + id + " is already cancelled");
+        }
+        refund = HotelPolicy.getInstance().refundFor(total, today, stay.checkIn());
+        status = BookingStatus.CANCELLED;
+        return refund;
     }
 
     /**
@@ -110,8 +127,7 @@ public class Booking implements Identifiable<String> {
      * Белсенді бронь үшін refund = 0, сондықтан бұл — total. if керек емес.
      */
     public Money revenue() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return total.minus(refund);
     }
 
     /** ДАЙЫН. */
@@ -125,14 +141,14 @@ public class Booking implements Identifiable<String> {
     /** Тек id бойынша. */
     @Override
     public boolean equals(Object o) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        if (this == o) return true;
+        if (!(o instanceof Booking booking)) return false;
+        return Objects.equals(id, booking.id);
     }
 
     @Override
     public int hashCode() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return Objects.hash(id);
     }
 
     /** ДАЙЫН. "B0001: 101 STANDARD, Aru x2, 2026-10-10..2026-10-13, 60000.00 ₸, CONFIRMED" */
