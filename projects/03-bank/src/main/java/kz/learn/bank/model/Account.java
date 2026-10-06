@@ -4,6 +4,8 @@ import kz.learn.bank.exception.InsufficientFundsException;
 import kz.learn.bank.fee.FeePolicy;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,7 +24,12 @@ import java.util.Objects;
  */
 public class Account implements Identifiable<String> {
 
-    // TODO: өрістерді жаз
+    private final String number;
+    private final String owner;
+    private final FeePolicy feePolicy;
+    private final Money overdraftLimit;
+    private final List<Transaction> history;
+    private Money balance = Money.ZERO;
 
     /**
      * number, owner — requireText(...) арқылы (бос болмайды, strip).
@@ -30,36 +37,37 @@ public class Account implements Identifiable<String> {
      * overdraftLimit < 0 -> IllegalArgumentException("overdraftLimit must not be negative").
      */
     public Account(String number, String owner, FeePolicy feePolicy, Money overdraftLimit) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        this.number = requireText(number, "number");
+        this.owner = requireText(owner, "owner");
+        this.feePolicy = Objects.requireNonNull(feePolicy, "feePolicy");
+        this.overdraftLimit = Objects.requireNonNull(overdraftLimit, "overdraftLimit");
+        if (overdraftLimit.isNegative()) {
+            throw new IllegalArgumentException("overdraftLimit must not be negative");
+        }
+        this.history = new ArrayList<>();
     }
 
     /** Шот нөмірі. */
     @Override
     public String getId() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return number;
     }
 
     public String getOwner() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return owner;
     }
 
     public Money getBalance() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return balance;
     }
 
     public Money getOverdraftLimit() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return overdraftLimit;
     }
 
     /** Жұмсауға болатын ең көп сома: balance + overdraftLimit. */
     public Money available() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return balance.plus(overdraftLimit);
     }
 
     /**
@@ -68,32 +76,29 @@ public class Account implements Identifiable<String> {
      * Кеңес: Collections.unmodifiableList(...) — көшірмесіз «тек оқуға» терезе.
      */
     public List<Transaction> history() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return Collections.unmodifiableList(history);
     }
 
     /** Салу. requirePositive, содан record(DEPOSIT, amount, "", at). Комиссия жоқ. */
     public Transaction deposit(Money amount, LocalDateTime at) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        requirePositive(amount);
+        return record(TransactionType.DEPOSIT, amount, "", at);
     }
 
     /** Шешу: debit(WITHDRAWAL, amount, "", at). */
     public List<Transaction> withdraw(Money amount, LocalDateTime at) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return debit(TransactionType.WITHDRAWAL, amount, "", at);
     }
 
     /** Аударым жіберу: debit(TRANSFER_OUT, amount, "to KZ0002", at). */
     public List<Transaction> transferOut(Money amount, String toNumber, LocalDateTime at) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return debit(TransactionType.TRANSFER_OUT, amount, "to " + toNumber, at);
     }
 
     /** Аударым қабылдау: requirePositive, record(TRANSFER_IN, amount, "from KZ0001", at). Комиссия жоқ. */
     public Transaction transferIn(Money amount, String fromNumber, LocalDateTime at) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        requirePositive(amount);
+        return record(TransactionType.TRANSFER_IN, amount, "from " + fromNumber, at);
     }
 
     /**
@@ -109,8 +114,19 @@ public class Account implements Identifiable<String> {
      * Тексеріс ортасында құласа, шот жартылай өзгеріп қалмайды.
      */
     private List<Transaction> debit(TransactionType type, Money amount, String description, LocalDateTime at) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        requirePositive(amount);
+        Money fee = feePolicy.feeFor(amount);
+        Money total = amount.plus(fee);
+        if (total.isGreaterThan(available())) {
+            throw new InsufficientFundsException(number, total, available());
+        }
+
+        Transaction main = record(type, amount, description, at);
+        if (!fee.isPositive()) {
+            return List.of(main);
+        }
+        Transaction feeTx = record(TransactionType.FEE, fee, "fee for #" + main.id(), at);
+        return List.of(main, feeTx);
     }
 
     /**
@@ -120,8 +136,12 @@ public class Account implements Identifiable<String> {
      * Кеңес: Transaction-ды балансты өзгертпес БҰРЫН жаса — оның конструкторы тексеріс жасайды.
      */
     private Transaction record(TransactionType type, Money amount, String description, LocalDateTime at) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        long id = history.size() + 1;
+        Money newBalance = type.isCredit() ? balance.plus(amount) : balance.minus(amount);
+        Transaction tx = new Transaction(id, type, amount, newBalance, at, description);
+        history.add(tx);
+        balance = newBalance;
+        return tx;
     }
 
     /** ДАЙЫН. */
@@ -143,14 +163,14 @@ public class Account implements Identifiable<String> {
     /** Тек number бойынша. */
     @Override
     public boolean equals(Object o) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        if (this == o) return true;
+        if (!(o instanceof Account account)) return false;
+        return number.equals(account.number);
     }
 
     @Override
     public int hashCode() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return number.hashCode();
     }
 
     /** ДАЙЫН. Пішім: "KZ0001 (Aru): 1500.00 ₸" */

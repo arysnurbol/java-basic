@@ -3,7 +3,9 @@ package kz.learn.bank.event;
 import kz.learn.bank.model.Account;
 import kz.learn.bank.model.Transaction;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * OBSERVER — «жариялаушы» (subject). Бақылаушылар тізімін ұстайды және оқиғаны бәріне таратады.
@@ -17,23 +19,20 @@ import java.util.List;
  */
 public class TransactionPublisher {
 
-    // TODO: өрісті жаз
+    private final List<TransactionListener> listeners = new ArrayList<>();
 
     /** null -> NullPointerException (кейін publish кезінде емес, дәл қазір құласын). */
     public void subscribe(TransactionListener listener) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        listeners.add(Objects.requireNonNull(listener, "listener"));
     }
 
     /** Жазылымнан шығару. Бар болса — true. */
     public boolean unsubscribe(TransactionListener listener) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return listeners.remove(listener);
     }
 
     public int listenerCount() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return listeners.size();
     }
 
     /**
@@ -41,7 +40,10 @@ public class TransactionPublisher {
      * Яғни tx1: A, B; tx2: A, B.
      */
     public void publish(Account account, List<Transaction> transactions) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        for (Transaction tx : transactions) {
+            for (TransactionListener listener : listeners) {
+                listener.onTransaction(account, tx);
+            }
+        }
     }
 }

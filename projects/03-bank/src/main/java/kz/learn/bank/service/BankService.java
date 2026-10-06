@@ -18,6 +18,7 @@ import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -37,18 +38,20 @@ import java.util.stream.Collectors;
  */
 public class BankService {
 
-    // TODO: өрістерді жаз
+    private final Repository<Account, String> accounts;
+    private final Clock clock;
+    private final TransactionPublisher publisher = new TransactionPublisher();
+    private int counter;
 
     /** accounts, clock — null болмайды. */
     public BankService(Repository<Account, String> accounts, Clock clock) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        this.accounts = Objects.requireNonNull(accounts, "accounts");
+        this.clock = Objects.requireNonNull(clock, "clock");
     }
 
     /** Бақылаушы тіркеу — publisher-ге тапсыр. */
     public void subscribe(TransactionListener listener) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        publisher.subscribe(listener);
     }
 
     // ---------------------------------------------------------------- Қадам 6: операциялар
@@ -59,26 +62,30 @@ public class BankService {
      * Кеңес: есептегішті Account сәтті жасалғаннан КЕЙІН арттыр.
      */
     public Account openAccount(String owner, FeePolicy feePolicy, Money overdraftLimit) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        Account account = new Account(String.format("KZ%04d", counter + 1), owner, feePolicy, overdraftLimit);
+        counter++;
+        return accounts.save(account);
     }
 
     /** Табылмаса — AccountNotFoundException(number). Кеңес: findById(...).orElseThrow(...) */
     public Account getAccount(String number) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return accounts.findById(number).orElseThrow(() -> new AccountNotFoundException(number));
     }
 
     /** Салу + оқиғаны жариялау. */
     public Transaction deposit(String number, Money amount) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        Account account = getAccount(number);
+        Transaction tx = account.deposit(amount, now());
+        publisher.publish(account, List.of(tx));
+        return tx;
     }
 
     /** Шешу + жариялау (комиссия болса — екі оқиға). */
     public List<Transaction> withdraw(String number, Money amount) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        Account account = getAccount(number);
+        List<Transaction> txs = account.withdraw(amount, now());
+        publisher.publish(account, txs);
+        return txs;
     }
 
     /**
@@ -94,13 +101,20 @@ public class BankService {
      * Бұл ретпен ғана қамтамасыз етілген атомарлық; ДҚ-да оны @Transactional береді.
      */
     public void transfer(String fromNumber, String toNumber, Money amount) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        Account from = getAccount(fromNumber);
+        Account to = getAccount(toNumber);
+        if (from.equals(to)) {
+            throw new BankException("Cannot transfer to the same account");
+        }
+        LocalDateTime at = now();
+        List<Transaction> outs = from.transferOut(amount, to.getId(), at);
+        Transaction in = to.transferIn(amount, from.getId(), at);
+        publisher.publish(from, outs);
+        publisher.publish(to, List.of(in));
     }
 
     private LocalDateTime now() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return LocalDateTime.now(clock);
     }
 
     // ---------------------------------------------------------------- Қадам 7: есептер
@@ -111,8 +125,15 @@ public class BankService {
      * Кеңес: tx.at().toLocalDate(), isBefore/isAfter.
      */
     public List<Transaction> statement(String number, LocalDate from, LocalDate to) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        if (from.isAfter(to)) {
+            throw new IllegalArgumentException("from must not be after to");
+        }
+        return getAccount(number).history().stream()
+                .filter(tx -> {
+                    LocalDate day = tx.at().toLocalDate();
+                    return !day.isBefore(from) && !day.isAfter(to);
+                })
+                .toList();
     }
 
     /**
@@ -123,14 +144,17 @@ public class BankService {
      * summingLong мұнда жарамайды — Money long емес. reducing — кез келген «қосу» үшін.
      */
     public Map<TransactionType, Money> totalsByType(String number) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return getAccount(number).history().stream()
+                .collect(Collectors.groupingBy(Transaction::type,
+                        () -> new EnumMap<>(TransactionType.class),
+                        Collectors.reducing(Money.ZERO, Transaction::amount, Money::plus)));
     }
 
     /** Барлық шоттың баланстарының қосындысы (теріс балансы да). Шот жоқ — Money.ZERO. Кеңес: reduce. */
     public Money totalBalance() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return accounts.findAll().stream()
+                .map(Account::getBalance)
+                .reduce(Money.ZERO, Money::plus);
     }
 
     /**
@@ -138,7 +162,10 @@ public class BankService {
      * Money Comparable болғандықтан: Comparator.comparing(Account::getBalance) жұмыс істейді.
      */
     public List<Account> topByBalance(int limit) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return accounts.findAll().stream()
+                .sorted(Comparator.comparing(Account::getBalance).reversed()
+                        .thenComparing(Account::getId))
+                .limit(limit)
+                .toList();
     }
 }

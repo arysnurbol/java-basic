@@ -3,6 +3,7 @@ package kz.learn.bank.event;
 import kz.learn.bank.model.Account;
 import kz.learn.bank.model.Transaction;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,19 +12,17 @@ import java.util.List;
  */
 public class AuditLog implements TransactionListener {
 
-    // TODO: өрісті жаз
+    private final List<String> lines = new ArrayList<>();
 
     /** format(account, tx) жолын журналға қос. */
     @Override
     public void onTransaction(Account account, Transaction tx) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        lines.add(format(account, tx));
     }
 
     /** Жазылған жолдар, ретімен. Сырттан өзгертуге болмайды. Кеңес: List.copyOf(...) */
     public List<String> lines() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return List.copyOf(lines);
     }
 
     /**

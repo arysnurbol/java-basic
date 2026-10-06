@@ -4,6 +4,7 @@ import kz.learn.bank.model.Account;
 import kz.learn.bank.model.Money;
 import kz.learn.bank.model.Transaction;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
@@ -17,12 +18,16 @@ import java.util.function.Consumer;
  */
 public class LargeTransactionAlert implements TransactionListener {
 
-    // TODO: өрістерді жаз
+    private final Money threshold;
+    private final Consumer<String> notifier;
 
     /** threshold, notifier — null болмайды; threshold <= 0 -> IllegalArgumentException("threshold must be positive"). */
     public LargeTransactionAlert(Money threshold, Consumer<String> notifier) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        this.threshold = Objects.requireNonNull(threshold, "threshold");
+        this.notifier = Objects.requireNonNull(notifier, "notifier");
+        if (!threshold.isPositive()) {
+            throw new IllegalArgumentException("threshold must be positive");
+        }
     }
 
     /**
@@ -32,7 +37,8 @@ public class LargeTransactionAlert implements TransactionListener {
      */
     @Override
     public void onTransaction(Account account, Transaction tx) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        if (!threshold.isGreaterThan(tx.amount())) {
+            notifier.accept("ALERT " + account.getId() + ": " + tx.type() + " " + tx.amount());
+        }
     }
 }
