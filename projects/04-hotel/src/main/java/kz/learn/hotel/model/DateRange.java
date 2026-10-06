@@ -24,8 +24,11 @@ public record DateRange(LocalDate checkIn, LocalDate checkOut) {
      * әйтпесе IllegalArgumentException("checkOut must be after checkIn").
      */
     public DateRange {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        Objects.requireNonNull(checkIn, "checkIn");
+        Objects.requireNonNull(checkOut, "checkOut");
+        if (!checkOut.isAfter(checkIn)) {
+            throw new IllegalArgumentException("checkOut must be after checkIn");
+        }
     }
 
     /**
@@ -34,8 +37,10 @@ public record DateRange(LocalDate checkIn, LocalDate checkOut) {
      * Кеңес: checkIn.plusDays(nights).
      */
     public static DateRange of(LocalDate checkIn, int nights) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        if (nights < 1) {
+            throw new IllegalArgumentException("nights must be positive");
+        }
+        return new DateRange(checkIn, checkIn.plusDays(nights));
     }
 
     /**
@@ -43,14 +48,12 @@ public record DateRange(LocalDate checkIn, LocalDate checkOut) {
      * Неге checkOut.getDayOfMonth() - checkIn.getDayOfMonth() емес? 30-қазаннан 2-қарашаға дейін байқап көр.
      */
     public long nights() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return ChronoUnit.DAYS.between(checkIn, checkOut);
     }
 
     /** Осы күннің ТҮНІ кезеңге кіре ме: checkIn <= night < checkOut. Кету күні — false. */
     public boolean contains(LocalDate night) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return !night.isBefore(checkIn) && night.isBefore(checkOut);
     }
 
     /**
@@ -62,14 +65,12 @@ public record DateRange(LocalDate checkIn, LocalDate checkOut) {
      * Төрт if-пен «ішінде ме, сол жақтан ба, оң жақтан ба, жауып тұр ма» деп жазба.
      */
     public boolean overlaps(DateRange other) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return checkIn.isBefore(other.checkOut) && other.checkIn.isBefore(checkOut);
     }
 
     /** Барлық түндер ретімен: [10, 13) -> [10, 11, 12]. Кеңес: checkIn.datesUntil(checkOut).toList(). */
     public List<LocalDate> nightDates() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return checkIn.datesUntil(checkOut).toList();
     }
 
     /** ДАЙЫН. "2026-10-10..2026-10-13" */
