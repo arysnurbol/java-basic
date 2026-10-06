@@ -23,35 +23,33 @@ import java.util.Objects;
  */
 public abstract class Room implements Identifiable<String> {
 
-    // TODO: өрістерді жаз
+    private final String number;
+    private final RoomType type;
 
     /** number — requireText(...) арқылы; type — null болмайды: Objects.requireNonNull(type, "type"). */
     protected Room(String number, RoomType type) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        this.number = requireText(number, "number");
+        Objects.requireNonNull(type, "type");
+        this.type = type;
     }
 
     /** Бөлме нөмірі. */
     @Override
     public String getId() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return number;
     }
 
     public RoomType getType() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return type;
     }
 
     /** Кеңес: type-қа тапсыр (delegation). */
     public int capacity() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return type.capacity();
     }
 
     public Money basePrice() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return type.basePrice();
     }
 
     /** Осы күннің түні үшін баға. Әр ұрпақ өзінше жазады. */
@@ -64,8 +62,7 @@ public abstract class Room implements Identifiable<String> {
      * объектінің нақты класы шешеді — полиморфизм (Template Method үлгісінің қарапайым түрі).
      */
     public Money priceFor(DateRange stay) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return stay.nightDates().stream().map(this::priceForNight).reduce(Money.ZERO, Money::plus);
     }
 
     /** ДАЙЫН. */
@@ -79,14 +76,14 @@ public abstract class Room implements Identifiable<String> {
     /** Тек number бойынша. */
     @Override
     public boolean equals(Object o) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        if (this == o) return true;
+        if (!(o instanceof Room room)) return false;
+        return Objects.equals(number, room.number);
     }
 
     @Override
     public int hashCode() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return Objects.hash(number);
     }
 
     /** ДАЙЫН. "101 STANDARD (2 guests, 20000.00 ₸/night)" */

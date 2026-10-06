@@ -26,8 +26,12 @@ public final class RoomFactory {
      * RoomType-қа жаңа мән қоссаң, бұл жер компиляцияланбай қалады. Бұл — жақсы.
      */
     public static Room create(RoomType type, String number) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        Objects.requireNonNull(type, "type");
+        return switch (type) {
+            case STANDARD -> new StandardRoom(number);
+            case DELUXE -> new DeluxeRoom(number);
+            case SUITE -> new Suite(number);
+        };
     }
 
     /**
@@ -40,7 +44,13 @@ public final class RoomFactory {
      * try-ды тек түрді талдайтын жолға ғана қой.
      */
     public static Room create(String typeName, String number) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        Objects.requireNonNull(typeName, "typeName");
+        RoomType type;
+        try {
+            type = RoomType.valueOf(typeName.strip().toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Unknown room type: " + typeName.strip(), e);
+        }
+        return create(type, number);
     }
 }

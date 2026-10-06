@@ -19,7 +19,6 @@ class StandardRoom extends Room {
 
     @Override
     public Money priceForNight(LocalDate night) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return basePrice();
     }
 }

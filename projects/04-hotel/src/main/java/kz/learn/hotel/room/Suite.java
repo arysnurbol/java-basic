@@ -20,14 +20,17 @@ class Suite extends Room {
 
     @Override
     public Money priceForNight(LocalDate night) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return basePrice();
     }
 
     /** Кеңес: Money total = super.priceFor(stay); — ата-класстың есебін қайта жазба, қолдан. */
     @Override
     public Money priceFor(DateRange stay) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        Money total = super.priceFor(stay);
+        HotelPolicy policy = HotelPolicy.getInstance();
+        if (stay.nights() >= policy.longStayNights()) {
+            return total.minus(total.percent(policy.longStayDiscountPercent()));
+        }
+        return total;
     }
 }

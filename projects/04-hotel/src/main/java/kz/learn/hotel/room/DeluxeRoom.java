@@ -18,7 +18,10 @@ class DeluxeRoom extends Room {
     /** Кеңес: HotelPolicy.getInstance().isWeekend(night), basePrice().percent(...). */
     @Override
     public Money priceForNight(LocalDate night) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        HotelPolicy policy = HotelPolicy.getInstance();
+        if (policy.isWeekend(night)) {
+            return basePrice().plus(basePrice().percent(policy.weekendSurchargePercent()));
+        }
+        return basePrice();
     }
 }
