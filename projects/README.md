@@ -7,7 +7,7 @@
 |---|---|---|---|
 | 1 | [ToDo List](01-todo/README.md) | инкапсуляция, абстрактілі класс, мұрагерлік, полиморфизм, интерфейс, композиция, enum, өз exception-ың | ✅ дайын |
 | 2 | [Кітапхана жүйесі](02-library/README.md) | бірнеше мұрагерлік иерархиясы, generics, Collections, айыппұл есептеу | ✅ дайын |
-| 3 | [Банк жүйесі](03-bank/README.md) | `BigDecimal`, транзакция тарихы, Strategy, Observer, immutable объектілер, `record` | ▶ қазір |
+| 3 | [Банк жүйесі](03-bank/README.md) | `BigDecimal`, транзакция тарихы, Strategy, Observer, immutable объектілер, `record` | ✅ дайын |
 | 4 | Паркинг / Қонақүй брондау | уақытқа байланысты есеп, Singleton, Factory, interval логикасы | ⏳ |
 | 5 | Интернет-дүкен | State, Strategy, Factory бірге, тапсырыс өмірлік циклі | ⏳ |
 
