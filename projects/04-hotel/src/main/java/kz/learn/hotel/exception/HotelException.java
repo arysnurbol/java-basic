@@ -6,6 +6,6 @@ package kz.learn.hotel.exception;
 public class HotelException extends RuntimeException {
 
     public HotelException(String message) {
-        super("TODO");
+        super(message);
     }
 }

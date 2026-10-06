@@ -13,21 +13,20 @@ public enum RoomType {
     DELUXE(3, 35_000),
     SUITE(4, 60_000);
 
-    // TODO: өрістерді жаз
+    private final int capacity;
+    private final Money basePrice;
 
     /** basePrice-ты Money.of(...) арқылы сақта. */
     RoomType(int capacity, long basePrice) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        this.capacity = capacity;
+        this.basePrice = Money.of(basePrice);
     }
 
     public int capacity() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return capacity;
     }
 
     public Money basePrice() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return basePrice;
     }
 }

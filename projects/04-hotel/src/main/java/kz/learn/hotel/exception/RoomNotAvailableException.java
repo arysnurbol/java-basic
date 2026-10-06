@@ -10,19 +10,20 @@ import kz.learn.hotel.model.DateRange;
  */
 public class RoomNotAvailableException extends HotelException {
 
-    // TODO: өрістерді жаз
+    private final String number;
+    private final DateRange stay;
 
     public RoomNotAvailableException(String number, DateRange stay) {
-        super("TODO");
+        super("Room " + number + " is not available for " + stay);
+        this.number = number;
+        this.stay = stay;
     }
 
     public String getNumber() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return number;
     }
 
     public DateRange getStay() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return stay;
     }
 }

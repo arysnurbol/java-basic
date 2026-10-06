@@ -7,14 +7,14 @@ package kz.learn.hotel.exception;
  */
 public class RoomNotFoundException extends HotelException {
 
-    // TODO: өрісті жаз
+    private final String number;
 
     public RoomNotFoundException(String number) {
-        super("TODO");
+        super("Room not found: " + number);
+        this.number = number;
     }
 
     public String getNumber() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return number;
     }
 }

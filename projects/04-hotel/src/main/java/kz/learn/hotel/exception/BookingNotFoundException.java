@@ -7,14 +7,14 @@ package kz.learn.hotel.exception;
  */
 public class BookingNotFoundException extends HotelException {
 
-    // TODO: өрісті жаз
+    private final String id;
 
     public BookingNotFoundException(String id) {
-        super("TODO");
+        super("Booking not found: " + id);
+        this.id = id;
     }
 
     public String getId() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return id;
     }
 }
