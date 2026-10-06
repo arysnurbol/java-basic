@@ -33,48 +33,52 @@ import java.util.Objects;
  */
 public final class HotelPolicy {
 
-    // TODO: өрістерді жаз
+    private static final HotelPolicy INSTANCE = new HotelPolicy();
+
+    private final int maxNights;
+    private final BigDecimal weekendSurchargePercent;
+    private final int longStayNights;
+    private final BigDecimal longStayDiscountPercent;
+    private final int freeCancellationDays;
+    private final BigDecimal lateCancellationRefundPercent;
 
     /** private! Мәндерді осында меншікте (BigDecimal.valueOf(25) т.с.с.). */
     private HotelPolicy() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        this.maxNights = 30;
+        this.weekendSurchargePercent = BigDecimal.valueOf(25);
+        this.longStayNights = 7;
+        this.longStayDiscountPercent = BigDecimal.valueOf(10);
+        this.freeCancellationDays = 7;
+        this.lateCancellationRefundPercent = BigDecimal.valueOf(50);
     }
 
     /** Әрқашан СОЛ БІР объект. */
     public static HotelPolicy getInstance() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return INSTANCE;
     }
 
     public int maxNights() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return maxNights;
     }
 
     public BigDecimal weekendSurchargePercent() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return weekendSurchargePercent;
     }
 
     public int longStayNights() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return longStayNights;
     }
 
     public BigDecimal longStayDiscountPercent() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return longStayDiscountPercent;
     }
 
     public int freeCancellationDays() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return freeCancellationDays;
     }
 
     public BigDecimal lateCancellationRefundPercent() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return lateCancellationRefundPercent;
     }
 
     /**
@@ -82,8 +86,8 @@ public final class HotelPolicy {
      * Кеңес: night.getDayOfWeek(), DayOfWeek.FRIDAY.
      */
     public boolean isWeekend(LocalDate night) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        DayOfWeek day = night.getDayOfWeek();
+        return day == DayOfWeek.FRIDAY || day == DayOfWeek.SATURDAY;
     }
 
     /**
@@ -95,7 +99,13 @@ public final class HotelPolicy {
      * paid, today, checkIn — null болмайды.
      */
     public Money refundFor(Money paid, LocalDate today, LocalDate checkIn) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        long daysBefore = ChronoUnit.DAYS.between(today, checkIn);
+        if (daysBefore >= freeCancellationDays) {
+            return paid;
+        }
+        if (daysBefore >= 1) {
+            return paid.percent(lateCancellationRefundPercent);
+        }
+        return Money.ZERO;
     }
 }
