@@ -19,24 +19,21 @@ public enum DeliveryType {
     PICKUP {
         @Override
         public Money costFor(Money goods, int units) {
-            // TODO
-            throw new UnsupportedOperationException("TODO");
+            return Money.ZERO;
         }
     },
 
     COURIER {
         @Override
         public Money costFor(Money goods, int units) {
-            // TODO
-            throw new UnsupportedOperationException("TODO");
+            return goods.compareTo(Money.of(20_000)) >= 0 ? Money.ZERO : Money.of(1_500);
         }
     },
 
     POST {
         @Override
         public Money costFor(Money goods, int units) {
-            // TODO
-            throw new UnsupportedOperationException("TODO");
+            return Money.of(1_000).plus(Money.of(200).times(units));
         }
     };
 
