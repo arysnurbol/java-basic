@@ -15,8 +15,13 @@ import java.util.Objects;
 public record Product(String id, String name, Category category, Money price) implements Identifiable<String> {
 
     public Product {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        id = requireText(id, "id");
+        name = requireText(name, "name");
+        Objects.requireNonNull(category, "category");
+        Objects.requireNonNull(price, "price");
+        if (!price.isPositive()) {
+            throw new IllegalArgumentException("price must be positive");
+        }
     }
 
     /** ДАЙЫН. Record-тың өз id() әдісі Identifiable-дің getId()-ын өзі жаба алмайды. */

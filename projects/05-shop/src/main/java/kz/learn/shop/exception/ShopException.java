@@ -6,6 +6,6 @@ package kz.learn.shop.exception;
 public class ShopException extends RuntimeException {
 
     public ShopException(String message) {
-        super("TODO");
+        super(message);
     }
 }

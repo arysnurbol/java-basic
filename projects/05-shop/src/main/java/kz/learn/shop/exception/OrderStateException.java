@@ -7,6 +7,6 @@ package kz.learn.shop.exception;
 public class OrderStateException extends ShopException {
 
     public OrderStateException(String message) {
-        super("TODO");
+        super(message);
     }
 }

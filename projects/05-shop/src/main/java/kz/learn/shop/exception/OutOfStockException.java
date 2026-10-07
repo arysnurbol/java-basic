@@ -7,24 +7,26 @@ package kz.learn.shop.exception;
  */
 public class OutOfStockException extends ShopException {
 
-    // TODO: өрістерді жаз
+    private final String productId;
+    private final int requested;
+    private final int available;
 
     public OutOfStockException(String productId, int requested, int available) {
-        super("TODO");
+        super("Not enough " + productId + ": requested " + requested + ", available " + available);
+        this.productId = productId;
+        this.requested = requested;
+        this.available = available;
     }
 
     public String getProductId() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return productId;
     }
 
     public int getRequested() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return requested;
     }
 
     public int getAvailable() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return available;
     }
 }

@@ -15,14 +15,15 @@ public record OrderLine(Product product, int quantity) {
     public static final int MAX_QUANTITY = 99;
 
     public OrderLine {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        Objects.requireNonNull(product, "product");
+        if (quantity < 1 || quantity > MAX_QUANTITY) {
+            throw new IllegalArgumentException("quantity must be between 1 and " + MAX_QUANTITY);
+        }
     }
 
     /** Жол сомасы: баға * саны. Кеңес: Money.times. */
     public Money total() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return product.price().times(quantity);
     }
 
     /** ДАЙЫН. "P1 Ноутбук x2 = 700000.00 ₸" */

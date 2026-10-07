@@ -7,14 +7,14 @@ package kz.learn.shop.exception;
  */
 public class InvalidPromoCodeException extends ShopException {
 
-    // TODO: өрістерді жаз
+    private final String code;
 
     public InvalidPromoCodeException(String code) {
-        super("TODO");
+        super("Invalid promo code: " + code);
+        this.code = code;
     }
 
     public String getCode() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return code;
     }
 }

@@ -7,14 +7,14 @@ package kz.learn.shop.exception;
  */
 public class OrderNotFoundException extends ShopException {
 
-    // TODO: өрістерді жаз
+    private final String id;
 
     public OrderNotFoundException(String id) {
-        super("TODO");
+        super("Order not found: " + id);
+        this.id = id;
     }
 
     public String getId() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return id;
     }
 }
