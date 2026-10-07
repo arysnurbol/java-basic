@@ -13,13 +13,13 @@ import java.math.BigDecimal;
 public record PercentDiscount(int percent) implements DiscountPolicy {
 
     public PercentDiscount {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        if (percent < 1 || percent > 50) {
+            throw new IllegalArgumentException("percent must be between 1 and 50");
+        }
     }
 
     @Override
     public Money discountFor(Money subtotal) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return subtotal.percent(BigDecimal.valueOf(percent));
     }
 }

@@ -16,7 +16,6 @@ public interface DiscountPolicy {
 
     /** Жеңілдік жоқ: әрқашан Money.ZERO. Кеңес: бір жолдық лямбда (FeePolicy.none() сияқты). */
     static DiscountPolicy none() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return subtotal -> Money.ZERO;
     }
 }

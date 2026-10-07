@@ -14,13 +14,14 @@ import java.util.Objects;
 public record FixedDiscount(Money amount) implements DiscountPolicy {
 
     public FixedDiscount {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        Objects.requireNonNull(amount, "amount");
+        if (!amount.isPositive()) {
+            throw new IllegalArgumentException("amount must be positive");
+        }
     }
 
     @Override
     public Money discountFor(Money subtotal) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return amount.isGreaterThan(subtotal) ? subtotal : amount;
     }
 }
