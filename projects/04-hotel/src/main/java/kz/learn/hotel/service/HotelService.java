@@ -34,12 +34,16 @@ import java.util.stream.Collectors;
  */
 public class HotelService {
 
-    // TODO: өрістерді жаз
+    private final Repository<Room, String> rooms;
+    private final Repository<Booking, String> bookings;
+    private final Clock clock;
+    private int bookingCounter;
 
     /** rooms, bookings, clock — null болмайды. */
     public HotelService(Repository<Room, String> rooms, Repository<Booking, String> bookings, Clock clock) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        this.rooms = Objects.requireNonNull(rooms, "rooms");
+        this.bookings = Objects.requireNonNull(bookings, "bookings");
+        this.clock = Objects.requireNonNull(clock, "clock");
     }
 
     // ---------------------------------------------------------------- Қадам 6: операциялар
@@ -50,20 +54,21 @@ public class HotelService {
      * Кеңес: алдымен жаса, СОСЫН тексер: нөмір strip-тен өтсін, " 101 " мен "101" бір бөлме.
      */
     public Room addRoom(RoomType type, String number) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        Room room = RoomFactory.create(type, number);
+        if (rooms.existsById(room.getId())) {
+            throw new HotelException("Room already exists: " + room.getId());
+        }
+        return rooms.save(room);
     }
 
     /** Табылмаса — RoomNotFoundException(number). */
     public Room getRoom(String number) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return rooms.findById(number).orElseThrow(() -> new RoomNotFoundException(number));
     }
 
     /** Табылмаса — BookingNotFoundException(id). */
     public Booking getBooking(String id) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return bookings.findById(id).orElseThrow(() -> new BookingNotFoundException(id));
     }
 
     /**
@@ -71,8 +76,10 @@ public class HotelService {
      * Бөлме жоқ — RoomNotFoundException. Кеңес: noneMatch.
      */
     public boolean isAvailable(String number, DateRange stay) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        Room room = getRoom(number);
+        return bookings.findAll().stream()
+                .filter(b -> b.getRoom().equals(room))
+                .noneMatch(b -> b.blocks(stay));
     }
 
     /**
@@ -82,8 +89,11 @@ public class HotelService {
      * (Лямбданың параметр типін неге жазу керек? Жазбай көр — компилятор не дейді?)
      */
     public List<Room> findAvailable(DateRange stay, int guests) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return rooms.findAll().stream()
+                .filter(r -> r.capacity() >= guests)
+                .filter(r -> isAvailable(r.getId(), stay))
+                .sorted(Comparator.comparing((Room r) -> r.priceFor(stay)).thenComparing(Room::getId))
+                .toList();
     }
 
     /**
@@ -98,19 +108,25 @@ public class HotelService {
      * сәтті жасалғаннан КЕЙІН арттыр.
      */
     public Booking book(String roomNumber, String guest, int guests, DateRange stay) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        Room room = getRoom(roomNumber);
+        if (stay.checkIn().isBefore(today())) {
+            throw new IllegalArgumentException("checkIn must not be in the past");
+        }
+        if (!isAvailable(room.getId(), stay)) {
+            throw new RoomNotAvailableException(room.getId(), stay);
+        }
+        Booking booking = new Booking(String.format("B%04d", bookingCounter + 1), room, guest, guests, stay);
+        bookingCounter++;
+        return bookings.save(booking);
     }
 
     /** Болдырмау: getBooking(...).cancel(today()). Қайтарылған ақшаны қайтарады. */
     public Money cancel(String bookingId) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return getBooking(bookingId).cancel(today());
     }
 
     private LocalDate today() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return LocalDate.now(clock);
     }
 
     // ---------------------------------------------------------------- Қадам 7: есептер
