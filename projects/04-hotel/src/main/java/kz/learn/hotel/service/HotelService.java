@@ -137,8 +137,10 @@ public class HotelService {
      * Кеңес: equalsIgnoreCase.
      */
     public List<Booking> bookingsOf(String guest) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        String name = guest.strip();
+        return bookings.findWhere(b -> b.getGuest().equalsIgnoreCase(name)).stream()
+                .sorted(Comparator.comparing((Booking b) -> b.getStay().checkIn()).thenComparing(Booking::getId))
+                .toList();
     }
 
     /**
@@ -147,8 +149,16 @@ public class HotelService {
      * Кеңес: stay.contains(night) — кету күні кірмейді, сол түні бөлме бос.
      */
     public int occupancyPercent(LocalDate night) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        int total = rooms.findAll().size();
+        if (total == 0) {
+            return 0;
+        }
+        long occupied = bookings.findAll().stream()
+                .filter(b -> b.isActive() && b.getStay().contains(night))
+                .map(Booking::getRoom)
+                .distinct()
+                .count();
+        return (int) (occupied * 100 / total);
     }
 
     /**
@@ -157,13 +167,18 @@ public class HotelService {
      * Кеңес: 03-bank-тағы totalsByType-ты еске ал: groupingBy + EnumMap + reducing.
      */
     public Map<RoomType, Money> revenueByType() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return bookings.findAll().stream()
+                .collect(Collectors.groupingBy(
+                        b -> b.getRoom().getType(),
+                        () -> new EnumMap<>(RoomType.class),
+                        Collectors.reducing(Money.ZERO, Booking::revenue, Money::plus)));
     }
 
     /** Осы күні келетін қонақтар: белсенді, checkIn == day, бөлме нөмірі бойынша. */
     public List<Booking> checkInsOn(LocalDate day) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return bookings.findAll().stream()
+                .filter(b -> b.isActive() && b.getStay().checkIn().equals(day))
+                .sorted(Comparator.comparing((Booking b) -> b.getRoom().getId()))
+                .toList();
     }
 }
