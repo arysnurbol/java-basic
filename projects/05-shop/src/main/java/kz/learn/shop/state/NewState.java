@@ -5,25 +5,21 @@ public final class NewState implements OrderState {
 
     @Override
     public OrderStatus status() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return OrderStatus.NEW;
     }
 
     @Override
     public boolean canEdit() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return true;
     }
 
     @Override
     public OrderState pay() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return new PaidState();
     }
 
     @Override
     public OrderState cancel() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return new CancelledState();
     }
 }

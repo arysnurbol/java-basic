@@ -5,7 +5,6 @@ public final class CancelledState implements OrderState {
 
     @Override
     public OrderStatus status() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return OrderStatus.CANCELLED;
     }
 }

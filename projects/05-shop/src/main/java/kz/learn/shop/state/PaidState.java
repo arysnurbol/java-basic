@@ -5,19 +5,16 @@ public final class PaidState implements OrderState {
 
     @Override
     public OrderStatus status() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return OrderStatus.PAID;
     }
 
     @Override
     public OrderState ship() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return new ShippedState();
     }
 
     @Override
     public OrderState cancel() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return new CancelledState();
     }
 }

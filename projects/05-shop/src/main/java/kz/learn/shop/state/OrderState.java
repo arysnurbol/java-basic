@@ -26,29 +26,24 @@ public interface OrderState {
 
     /** Тапсырыс құрамын (тауарлар, промокод) өзгертуге бола ма. Әдепкі — жоқ. */
     default boolean canEdit() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return false;
     }
 
     /** Әдепкі: рұқсат жоқ -> throw notAllowed("pay"). ship/deliver/cancel — дәл осылай. */
     default OrderState pay() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        throw notAllowed("pay");
     }
 
     default OrderState ship() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        throw notAllowed("ship");
     }
 
     default OrderState deliver() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        throw notAllowed("deliver");
     }
 
     default OrderState cancel() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        throw notAllowed("cancel");
     }
 
     /**
@@ -57,7 +52,6 @@ public interface OrderState {
      * Қайтарады (лақтырмайды!): new OrderStateException("Cannot " + action + " order in status " + status()).
      */
     private OrderStateException notAllowed(String action) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return new OrderStateException("Cannot " + action + " order in status " + status());
     }
 }

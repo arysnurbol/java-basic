@@ -5,13 +5,11 @@ public final class ShippedState implements OrderState {
 
     @Override
     public OrderStatus status() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return OrderStatus.SHIPPED;
     }
 
     @Override
     public OrderState deliver() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return new DeliveredState();
     }
 }
