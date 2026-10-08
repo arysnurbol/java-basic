@@ -38,12 +38,15 @@ import java.util.stream.Collectors;
  */
 public class ShopService {
 
-    // TODO: өрістерді жаз
+    private final Repository<Product, String> products;
+    private final Repository<Order, String> orders;
+    private final Map<String, Integer> stock = new HashMap<>();
+    private int orderCounter;
 
     /** products, orders — null болмайды. */
     public ShopService(Repository<Product, String> products, Repository<Order, String> orders) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        this.products = Objects.requireNonNull(products, "products");
+        this.orders = Objects.requireNonNull(orders, "orders");
     }
 
     // ---------------------------------------------------------------- Қадам 7: операциялар
@@ -53,26 +56,30 @@ public class ShopService {
      * сосын: сондай артикул бар -> ShopException("Product already exists: P1").
      */
     public Product addProduct(String id, String name, Category category, long price) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        Product product = new Product(id, name, category, Money.of(price));
+        if (products.existsById(product.id())) {
+            throw new ShopException("Product already exists: " + product.id());
+        }
+        products.save(product);
+        stock.put(product.id(), 0);
+        return product;
     }
 
     /** Табылмаса — ProductNotFoundException(id). */
     public Product getProduct(String id) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return products.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
     }
 
     /** Табылмаса — OrderNotFoundException(id). */
     public Order getOrder(String id) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return orders.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
     }
 
     /** Каталог: санат бойынша (enum ретімен), тең болса — артикул бойынша. */
     public List<Product> catalog() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return products.findAll().stream()
+                .sorted(Comparator.comparing(Product::category).thenComparing(Product::id))
+                .toList();
     }
 
     /**
@@ -80,14 +87,16 @@ public class ShopService {
      * quantity <= 0 -> IllegalArgumentException("quantity must be positive"). Кеңес: Map.merge.
      */
     public void restock(String productId, int quantity) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        getProduct(productId);
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("quantity must be positive");
+        }
+        stock.merge(productId, quantity, Integer::sum);
     }
 
     /** Қоймадағы қалдық. Тауар жоқ -> ProductNotFoundException. */
     public int stockOf(String productId) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return stock.getOrDefault(getProduct(productId).id(), 0);
     }
 
     /**
@@ -95,8 +104,9 @@ public class ShopService {
      * өткеннен КЕЙІН арттыр (HotelService.book-тағыдай).
      */
     public Order createOrder(String customer, DeliveryType delivery) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        Order order = new Order(String.format("ORD-%04d", orderCounter + 1), customer, delivery);
+        orderCounter++;
+        return orders.save(order);
     }
 
     /**
@@ -104,20 +114,23 @@ public class ShopService {
      * Қалдық мұнда ТЕКСЕРІЛМЕЙДІ — себетке салу тауарды ұстап қалмайды, ол тек төлегенде есептен шығады.
      */
     public Order addItem(String orderId, String productId, int quantity) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        Order order = getOrder(orderId);
+        order.addItem(getProduct(productId), quantity);
+        return order;
     }
 
     /** order.removeItem(...). Қайтарады: тапсырыс. */
     public Order removeItem(String orderId, String productId) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        Order order = getOrder(orderId);
+        order.removeItem(productId);
+        return order;
     }
 
     /** Промокод: DiscountFactory.fromCode(code), сосын order.applyDiscount(...). Бос код жеңілдікті алып тастайды. */
     public Order applyPromo(String orderId, String code) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        Order order = getOrder(orderId);
+        order.applyDiscount(DiscountFactory.fromCode(code));
+        return order;
     }
 
     /**
@@ -131,18 +144,26 @@ public class ShopService {
      * Қайтарады: order.total().
      */
     public Money pay(String orderId) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        Order order = getOrder(orderId);
+        for (OrderLine line : order.getLines()) {
+            int available = stockOf(line.product().id());
+            if (line.quantity() > available) {
+                throw new OutOfStockException(line.product().id(), line.quantity(), available);
+            }
+        }
+        order.pay();
+        for (OrderLine line : order.getLines()) {
+            stock.merge(line.product().id(), -line.quantity(), Integer::sum);
+        }
+        return order.total();
     }
 
     public void ship(String orderId) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        getOrder(orderId).ship();
     }
 
     public void deliver(String orderId) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        getOrder(orderId).deliver();
     }
 
     /**
@@ -152,28 +173,38 @@ public class ShopService {
      *   wasPaid болса: қалдықтарды қайтар және order.total() қайтар; әйтпесе — Money.ZERO.
      */
     public Money cancel(String orderId) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        Order order = getOrder(orderId);
+        boolean wasPaid = order.getStatus().isPaid();
+        order.cancel();
+        if (!wasPaid) {
+            return Money.ZERO;
+        }
+        for (OrderLine line : order.getLines()) {
+            stock.merge(line.product().id(), line.quantity(), Integer::sum);
+        }
+        return order.total();
     }
 
     // ---------------------------------------------------------------- Қадам 8: есептер
 
     /** Клиенттің барлық тапсырысы (кез келген күйде), аты регистрге қарамай (strip), нөмір бойынша. */
     public List<Order> ordersOf(String customer) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        String name = customer.strip();
+        return orders.findWhere(o -> o.getCustomer().equalsIgnoreCase(name)).stream()
+                .sorted(Comparator.comparing(Order::getId))
+                .toList();
     }
 
     /** Күй бойынша тапсырыс саны. Тек кездесетін күйлер; EnumMap. Кеңес: groupingBy + counting. */
     public Map<OrderStatus, Long> countByStatus() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return orders.findAll().stream()
+                .collect(Collectors.groupingBy(Order::getStatus, () -> new EnumMap<>(OrderStatus.class),
+                        Collectors.counting()));
     }
 
     /** Табыс: төленген (getStatus().isPaid()) тапсырыстардың total() қосындысы, жеткізуімен бірге. */
     public Money revenue() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return paidOrders().stream().map(Order::total).reduce(Money.ZERO, Money::plus);
     }
 
     /**
@@ -181,8 +212,11 @@ public class ShopService {
      * Тек сатылымы бар санаттар; EnumMap. Кеңес: flatMap -> groupingBy + reducing (04-hotel revenueByType).
      */
     public Map<Category, Money> salesByCategory() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return paidOrders().stream()
+                .flatMap(order -> order.getLines().stream())
+                .collect(Collectors.groupingBy(line -> line.product().category(),
+                        () -> new EnumMap<>(Category.class),
+                        Collectors.reducing(Money.ZERO, OrderLine::total, Money::plus)));
     }
 
     /**
@@ -190,13 +224,19 @@ public class ShopService {
      * Кеңес: groupingBy(артикул, summingInt) -> entrySet().stream() -> sorted -> limit -> getProduct.
      */
     public List<Product> topProducts(int n) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return paidOrders().stream()
+                .flatMap(order -> order.getLines().stream())
+                .collect(Collectors.groupingBy(line -> line.product().id(), Collectors.summingInt(OrderLine::quantity)))
+                .entrySet().stream()
+                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed()
+                        .thenComparing(Map.Entry.comparingByKey()))
+                .limit(n)
+                .map(entry -> getProduct(entry.getKey()))
+                .toList();
     }
 
     /** Төленген тапсырыстар (PAID, SHIPPED, DELIVERED). */
     private List<Order> paidOrders() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return orders.findWhere(order -> order.getStatus().isPaid());
     }
 }
