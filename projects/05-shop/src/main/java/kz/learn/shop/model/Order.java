@@ -28,42 +28,43 @@ import java.util.Objects;
  */
 public class Order implements Identifiable<String> {
 
-    // TODO: өрістерді жаз
+    private final String id;
+    private final String customer;
+    private final DeliveryType delivery;
+    private final Map<String, OrderLine> lines = new LinkedHashMap<>();
+    private DiscountPolicy discount = DiscountPolicy.none();
+    private OrderState state = new NewState();
 
     /**
      * id, customer — бос емес, strip (requireText);  delivery — Objects.requireNonNull(delivery, "delivery").
      */
     public Order(String id, String customer, DeliveryType delivery) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        this.id = requireText(id, "id");
+        this.customer = requireText(customer, "customer");
+        this.delivery = Objects.requireNonNull(delivery, "delivery");
     }
 
     @Override
     public String getId() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return id;
     }
 
     public String getCustomer() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return customer;
     }
 
     public DeliveryType getDelivery() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return delivery;
     }
 
     /** Күйдің атауын күйдің өзінен сұра. */
     public OrderStatus getStatus() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return state.status();
     }
 
     /** Жолдар қосылған ретімен; қайтқан тізімді өзгерту тапсырысқа әсер етпейді (List.copyOf). */
     public List<OrderLine> getLines() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return List.copyOf(lines.values());
     }
 
     /**
@@ -74,8 +75,10 @@ public class Order implements Identifiable<String> {
      * Кеңес: алдымен new OrderLine(product, quantity) (тексеріс осында), сосын Map.merge.
      */
     public void addItem(Product product, int quantity) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        requireEditable();
+        OrderLine added = new OrderLine(product, quantity);
+        lines.merge(product.id(), added,
+                (old, add) -> new OrderLine(old.product(), old.quantity() + add.quantity()));
     }
 
     /**
@@ -83,44 +86,41 @@ public class Order implements Identifiable<String> {
      * Ондай тауар тапсырыста жоқ -> ProductNotFoundException(productId).
      */
     public void removeItem(String productId) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        requireEditable();
+        if (lines.remove(productId) == null) {
+            throw new ProductNotFoundException(productId);
+        }
     }
 
     /** Жеңілдікті ауыстыру (соңғысы жарайды). Тек өзгертуге болатын күйде; policy — null емес. */
     public void applyDiscount(DiscountPolicy policy) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        requireEditable();
+        this.discount = Objects.requireNonNull(policy, "policy");
     }
 
     /** Барлық дана саны (P1 x2 + P2 x3 -> 5). */
     public int units() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return lines.values().stream().mapToInt(OrderLine::quantity).sum();
     }
 
     /** Жолдар сомасы, жеңілдікке дейін. Бос тапсырыс — Money.ZERO. */
     public Money subtotal() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return lines.values().stream().map(OrderLine::total).reduce(Money.ZERO, Money::plus);
     }
 
     /** Жеңілдік сомасы: discount.discountFor(subtotal()). */
     public Money discount() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return discount.discountFor(subtotal());
     }
 
     /** Жеткізу құны: delivery.costFor(жеңілдіктен кейінгі сома, units()). */
     public Money deliveryCost() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return delivery.costFor(subtotal().minus(discount()), units());
     }
 
     /** Төлейтін сома: subtotal - discount + deliveryCost. */
     public Money total() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return subtotal().minus(discount()).plus(deliveryCost());
     }
 
     /**
@@ -131,32 +131,33 @@ public class Order implements Identifiable<String> {
      * (1 мен 2-нің ретін ауыстырсаң: CANCELLED болған бос тапсырыс қандай хабарлама береді?)
      */
     public void pay() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        OrderState next = state.pay();
+        if (lines.isEmpty()) {
+            throw new OrderStateException("Cannot pay empty order");
+        }
+        state = next;
     }
 
     /** state = state.ship(). */
     public void ship() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        state = state.ship();
     }
 
     /** state = state.deliver(). */
     public void deliver() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        state = state.deliver();
     }
 
     /** state = state.cancel(). */
     public void cancel() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        state = state.cancel();
     }
 
     /** Өзгертуге болмаса -> OrderStateException("Order ORD-0001 cannot be changed in status PAID"). */
     private void requireEditable() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        if (!state.canEdit()) {
+            throw new OrderStateException("Order " + id + " cannot be changed in status " + getStatus());
+        }
     }
 
     /** ДАЙЫН. */
@@ -170,14 +171,12 @@ public class Order implements Identifiable<String> {
     /** Тек id бойынша. */
     @Override
     public boolean equals(Object o) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return this == o || o instanceof Order other && id.equals(other.id);
     }
 
     @Override
     public int hashCode() {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        return id.hashCode();
     }
 
     /** ДАЙЫН. "ORD-0001: Aru, COURIER, 3 дана, 701500.00 ₸, PAID" */
