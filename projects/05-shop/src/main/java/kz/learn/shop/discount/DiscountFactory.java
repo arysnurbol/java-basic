@@ -23,7 +23,21 @@ public final class DiscountFactory {
     }
 
     public static DiscountPolicy fromCode(String code) {
-        // TODO
-        throw new UnsupportedOperationException("TODO");
+        if (code == null || code.isBlank()) {
+            return DiscountPolicy.none();
+        }
+        String normalized = code.strip().toUpperCase(Locale.ROOT);
+        try {
+            if (normalized.startsWith("SALE")) {
+                return new PercentDiscount(Integer.parseInt(normalized.substring("SALE".length())));
+            }
+            if (normalized.startsWith("MINUS")) {
+                return new FixedDiscount(Money.of(Integer.parseInt(normalized.substring("MINUS".length()))));
+            }
+        } catch (IllegalArgumentException e) {
+            // NumberFormatException ("SALEABC") те осында түседі — ол IllegalArgumentException-ның ұрпағы
+            throw new InvalidPromoCodeException(normalized);
+        }
+        throw new InvalidPromoCodeException(normalized);
     }
 }
